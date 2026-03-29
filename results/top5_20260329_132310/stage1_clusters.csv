@@ -1,0 +1,21 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,4,x_ma5_ma20_240min,0.4581483197621648,x_ma5_ma20_240min | x_ma5_ma20_240min_1
+2,8,x_price_ma250_dev_240min,0.6021105777124774,x_price_ma250_dev_240min | x_price_ma250_dev_240min_1
+3,2,x_ma_midday_ret_1,0.44056765764390177,x_ma_midday_ret_1 | x_ma_midday_ret
+4,2,x_price_jump_60min,0.8944926799890905,x_price_jump_60min | x_price_jump_60min_1
+5,3,x_price_jump_240min_1,0.6326411071839523,x_price_jump_240min_1 | x_price_jump_240min
+6,2,x_price_delta_volume_60min_1,0.543495996719431,x_price_delta_volume_60min_1 | x_price_delta_volume_60min
+7,2,x_vpin_zscore_filtered_60min_1,0.8198137846534923,x_vpin_zscore_filtered_60min_1 | x_vpin_zscore_filtered_60min
+8,1,x_trend_break_watch_60min_1,0.8281772655059487,x_trend_break_watch_60min_1
+9,2,x_ad_line_240min_1,0.38667496627471365,x_ad_line_240min_1 | x_ad_line_240min
+10,3,x_overnight_vol_60min,0.512926762466658,x_overnight_vol_60min | x_overnight_return_60min
+11,2,x_absorption_60min,0.5034210545937134,x_absorption_60min | x_absorption_60min_1
+12,2,x_price_channel_breakout_60min,0.4777177366457666,x_price_channel_breakout_60min | x_price_channel_breakout_60min_1
+13,3,x_price_channel_breakout_240min_1,0.38647736624923246,x_price_channel_breakout_240min_1 | x_ma5_ma20_60min_1
+14,2,x_hurst_60min_1,0.3905191516426822,x_hurst_60min_1 | x_hurst_60min
+15,2,x_cvd_60min,0.4635764087262679,x_cvd_60min | x_cvd_60min_1
+16,1,x_high_low_ratio_60min,0.3454090202992432,x_high_low_ratio_60min
+17,2,x_distribute_60min,0.8736440318746905,x_distribute_60min | x_distribute_60min_1
+18,2,x_trend_60min,0.7374366532660683,x_trend_60min | x_trend_60min_1
+19,2,x_price_delta_trend_60min,0.7231561691702751,x_price_delta_trend_60min | x_price_delta_trend_60min_1
+20,3,x_is_night,0.7454483914989942,x_is_night | x_is_night_1

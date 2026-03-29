@@ -1,0 +1,202 @@
+[
+  {
+    "rank": 1,
+    "oos_sharpe": 1.6173571557110147,
+    "score": 1.5941346634755273,
+    "mean_abs_corr": 0.09288996894194979,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma_midday_ret",
+      "x_price_jump_240min_1",
+      "x_price_delta_volume_60min",
+      "x_ad_line_240min",
+      "x_overnight_return_60min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_trend_60min_1",
+      "x_price_delta_trend_60min",
+      "x_is_night"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma_midday_ret",
+      "x_price_jump_240min_1",
+      "x_price_delta_volume_60min",
+      "x_ad_line_240min",
+      "x_overnight_return_60min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_trend_60min_1",
+      "x_price_delta_trend_60min",
+      "x_is_night"
+    ]
+  },
+  {
+    "rank": 2,
+    "oos_sharpe": 1.5675142442951981,
+    "score": 1.549063167740295,
+    "mean_abs_corr": 0.07380430621961225,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_price_ma250_dev_240min_1",
+      "x_ma_midday_ret_1",
+      "x_price_jump_60min_1",
+      "x_price_delta_volume_60min",
+      "x_ad_line_240min",
+      "x_overnight_vol_60min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_60min",
+      "x_distribute_60min",
+      "x_trend_60min_1",
+      "x_is_night"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_price_ma250_dev_240min_1",
+      "x_ma_midday_ret_1",
+      "x_price_jump_60min_1",
+      "x_price_delta_volume_60min",
+      "x_ad_line_240min",
+      "x_overnight_vol_60min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_60min",
+      "x_distribute_60min",
+      "x_trend_60min_1",
+      "x_is_night"
+    ]
+  },
+  {
+    "rank": 3,
+    "oos_sharpe": 1.6066834301280315,
+    "score": 1.593438812258063,
+    "mean_abs_corr": 0.05297847147987403,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_price_ma250_dev_240min_1",
+      "x_ma_midday_ret_1",
+      "x_price_jump_60min_1",
+      "x_price_jump_240min",
+      "x_price_delta_volume_60min",
+      "x_overnight_vol_60min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_is_night_1"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_price_ma250_dev_240min_1",
+      "x_ma_midday_ret_1",
+      "x_price_jump_60min_1",
+      "x_price_jump_240min",
+      "x_price_delta_volume_60min",
+      "x_overnight_vol_60min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_is_night_1"
+    ]
+  },
+  {
+    "rank": 4,
+    "oos_sharpe": 1.4983688493747835,
+    "score": 1.4788096388620193,
+    "mean_abs_corr": 0.07823684205105656,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma5_ma20_240min",
+      "x_price_ma250_dev_240min_1",
+      "x_price_jump_60min_1",
+      "x_price_jump_240min",
+      "x_trend_break_watch_60min_1",
+      "x_ad_line_240min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_60min",
+      "x_distribute_60min",
+      "x_trend_60min_1",
+      "x_is_night",
+      "x_ma_midday_ret"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma5_ma20_240min",
+      "x_price_ma250_dev_240min_1",
+      "x_price_jump_60min_1",
+      "x_price_jump_240min",
+      "x_trend_break_watch_60min_1",
+      "x_ad_line_240min",
+      "x_absorption_60min_1",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_60min",
+      "x_distribute_60min",
+      "x_trend_60min_1",
+      "x_is_night",
+      "x_ma_midday_ret"
+    ]
+  },
+  {
+    "rank": 5,
+    "oos_sharpe": 1.5576551402959644,
+    "score": 1.5415298348300597,
+    "mean_abs_corr": 0.06450122186361887,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_price_ma250_dev_240min_1",
+      "x_ma_midday_ret_1",
+      "x_price_jump_60min_1",
+      "x_price_delta_volume_60min",
+      "x_trend_break_watch_60min_1",
+      "x_ad_line_240min",
+      "x_overnight_vol_60min",
+      "x_absorption_60min_1",
+      "x_price_channel_breakout_240min_1",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_60min",
+      "x_distribute_60min",
+      "x_trend_60min_1",
+      "x_is_night"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_price_ma250_dev_240min_1",
+      "x_ma_midday_ret_1",
+      "x_price_jump_60min_1",
+      "x_price_delta_volume_60min",
+      "x_trend_break_watch_60min_1",
+      "x_ad_line_240min",
+      "x_overnight_vol_60min",
+      "x_absorption_60min_1",
+      "x_price_channel_breakout_240min_1",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_60min",
+      "x_distribute_60min",
+      "x_trend_60min_1",
+      "x_is_night"
+    ]
+  }
+]
