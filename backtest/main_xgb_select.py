@@ -88,7 +88,7 @@ from utils2 import (
 
 
 MUST_INCLUDE: list[str] = [
-    "x_vwap_60min",
+    "x_vwap",
     "x_ma_ret_4h",
 ]
 
@@ -106,7 +106,7 @@ def parse_arguments():
     )
 
     # ── 数据 ──────────────────────────────────────────────────────────────
-    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_60min_with_ma_features_from_scratch.csv"))
+    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_with_ma_features.csv"))
     # p.add_argument("--data_file",  default=r"G:\pail_oil_cta\data_process\data\output\Palm_oil.csv")
     p.add_argument("--start_date", default="2018-04-17")
 

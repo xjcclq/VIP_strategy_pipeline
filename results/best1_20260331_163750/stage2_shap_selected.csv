@@ -1,0 +1,17 @@
+﻿factor,appear_folds,is_must
+x_adx,5,False
+x_hurst_exponent,5,False
+x_skewness,5,False
+x_stoch_k,5,False
+x_price_impact,5,False
+x_kurtosis,5,False
+x_volatility_ratio,5,False
+x_price_ma250_dev,5,False
+x_price_volume_trend,5,False
+x_parkinson_volatility,5,False
+x_open_interest,5,False
+x_ma_afternoon_ret,4,False
+x_ma_bar_ret,4,False
+x_spread_8h,4,False
+x_kyle_lambda_lag,4,False
+x_amihud_volatility,4,False

@@ -1,0 +1,19 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,2,x_fractal_dim_240min,0.7194288935909383,x_fractal_dim_240min | x_fractal_dim_240min_1
+2,2,x_price_jump_240min,0.5587774597736225,x_price_jump_240min | x_price_jump_240min_1
+3,2,x_liquidity_6slot,0.6423266351253087,x_liquidity_6slot | x_liquidity_6slot_1
+4,6,x_high_low_ratio_6slot,0.9281953155867972,x_high_low_ratio_6slot | x_high_low_ratio_6slot_1
+5,2,x_liquidity_240min_1,0.6268674630214291,x_liquidity_240min_1 | x_liquidity_240min
+6,2,x_price_jump_6slot,0.7398949932082066,x_price_jump_6slot | x_price_jump_6slot_1
+7,2,x_ma_ret_1h,0.661613735470713,x_ma_ret_1h | x_session_sin_1
+8,2,x_price_delta_trend_6slot,0.8476075262813678,x_price_delta_trend_6slot | x_price_delta_trend_6slot_1
+9,3,x_bvwap_v_1,0.706271219611352,x_bvwap_v_1 | x_bvwap_v
+10,1,x_is_night,0.5471544663619206,x_is_night
+11,1,x_session_sin,0.48884569166977204,x_session_sin
+12,2,x_hurst_6slot_1,0.5321241632021766,x_hurst_6slot_1 | x_hurst_6slot
+13,2,x_cvd_6slot,0.831372217781453,x_cvd_6slot | x_cvd_6slot_1
+14,2,x_ad_line_240min_1,0.6764053041434255,x_ad_line_240min_1 | x_ad_line_240min
+15,4,x_money_flow_ratio_6slot,0.586946462321334,x_money_flow_ratio_6slot | x_mfi_6slot
+16,5,x_ma5_ma20_6slot,0.9740875142036279,x_ma5_ma20_6slot | x_ma5_ma20_6slot_1
+17,6,x_ma5_ma20_240min,0.9457757432970902,x_ma5_ma20_240min | x_ma5_ma20_240min_1
+18,4,x_ma20_ma60_240min,1.0691258959206678,x_ma20_ma60_240min | x_ma20_ma60_240min_1

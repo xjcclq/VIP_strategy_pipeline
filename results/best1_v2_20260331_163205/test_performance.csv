@@ -1,0 +1,2 @@
+﻿val_sharpe,test_sharpe,cv_score,mac,n_factors,factors
+2.587384572146802,-0.2336486073618665,2.370698282124501,0.10692491838285138,5,x_hurst_exponent|x_kyle_lambda_lag|x_accumulation_distribution|x_price_volume_trend|x_ma_ret_8h

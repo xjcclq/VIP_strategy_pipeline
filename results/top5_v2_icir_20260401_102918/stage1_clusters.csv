@@ -1,0 +1,13 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,2,x_amihud_volatility_1,0.5272653665969658,x_amihud_volatility_1 | x_amihud_volatility
+2,1,x_price_impact,0.4577567005923578,x_price_impact
+3,4,x_atr,0.5388331604627826,x_atr | x_atr_1
+4,8,x_kurtosis,0.6221654149340611,x_kurtosis | x_realized_volatility_1
+5,2,x_boll_lower_1,0.4551607810425339,x_boll_lower_1 | x_boll_lower
+6,7,x_ad,0.5215755896481366,x_ad | x_ad_1
+7,6,x_session_sin,0.4877372608676065,x_session_sin | x_vwap_dev
+8,12,x_turnover,0.6280319843554725,x_turnover | x_buy_vol
+9,2,x_volume_ma_ratio_1,0.577905986706278,x_volume_ma_ratio_1 | x_volume_ma_ratio
+10,2,x_spread_8h,0.4667687946288395,x_spread_8h | x_spread_12h
+11,2,x_price_volume_trend_1,0.5358213041280979,x_price_volume_trend_1 | x_price_volume_trend
+12,2,x_volume_profile_indicator_1,0.5314480544904852,x_volume_profile_indicator_1 | x_volume_profile_indicator

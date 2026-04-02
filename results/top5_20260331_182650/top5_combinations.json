@@ -1,0 +1,162 @@
+[
+  {
+    "rank": 1,
+    "oos_sharpe": 2.2461358093694175,
+    "score": 2.2306758379365004,
+    "mean_abs_corr": 0.06183988573166759,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_session_sin",
+      "x_kyle_lambda_lag",
+      "x_open_interest"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_session_sin",
+      "x_kyle_lambda_lag",
+      "x_open_interest"
+    ]
+  },
+  {
+    "rank": 2,
+    "oos_sharpe": 2.222571332485418,
+    "score": 2.2051453699372026,
+    "mean_abs_corr": 0.06970385019286236,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_liquidity_indicator_1",
+      "x_price_impact_1",
+      "x_hurst_exponent",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_open_interest_1",
+      "x_kyle_lambda_lag_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_liquidity_indicator_1",
+      "x_price_impact_1",
+      "x_hurst_exponent",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_open_interest_1",
+      "x_kyle_lambda_lag_1"
+    ]
+  },
+  {
+    "rank": 3,
+    "oos_sharpe": 2.2384787093199465,
+    "score": 2.223074255880938,
+    "mean_abs_corr": 0.061617813756033556,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_session_sin",
+      "x_kyle_lambda_lag",
+      "x_open_interest_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_session_sin",
+      "x_kyle_lambda_lag",
+      "x_open_interest_1"
+    ]
+  },
+  {
+    "rank": 4,
+    "oos_sharpe": 2.2164594038972547,
+    "score": 2.2009916811515406,
+    "mean_abs_corr": 0.061870890982856114,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_session_sin",
+      "x_kyle_lambda_lag_1",
+      "x_open_interest_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_session_sin",
+      "x_kyle_lambda_lag_1",
+      "x_open_interest_1"
+    ]
+  },
+  {
+    "rank": 5,
+    "oos_sharpe": 2.2137862340414025,
+    "score": 2.1963835966997047,
+    "mean_abs_corr": 0.06961054936679113,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_hurst_exponent",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_open_interest_1",
+      "x_kyle_lambda_lag_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_hurst_exponent",
+      "x_ma_ret_20h",
+      "x_aroon_up",
+      "x_spread_12h",
+      "x_open_interest_1",
+      "x_kyle_lambda_lag_1"
+    ]
+  }
+]

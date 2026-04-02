@@ -1,0 +1,2 @@
+﻿val_sharpe,test_sharpe,cv_score,mac,n_factors,factors
+4.002081638595904,0.9870244086965649,1.7351975152694958,0.06468231471659806,12,x_ma_ret_1h|x_is_night|x_session_sin|x_amihud_volatility|x_volatility_ratio|x_kurtosis|x_spread_8h|x_price_ma250_dev|x_parkinson_volatility|x_price_volume_trend|x_open_interest|x_liquidity_indicator

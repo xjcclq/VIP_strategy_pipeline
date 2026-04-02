@@ -1,0 +1,6 @@
+﻿,"组合1（x_money_flow_ratio,x_open_interest...）","组合2（x_money_flow_index,x_open_interest...）","组合3（x_money_flow_index,x_open_interest...）","组合4（x_money_flow_index,x_open_interest_1...）","组合5（x_money_flow_ratio,x_open_interest...）"
+"组合1（x_money_flow_ratio,x_open_interest...）",1.0,0.9284994249703049,0.9894271052945351,0.9054590238441343,0.9962728787624319
+"组合2（x_money_flow_index,x_open_interest...）",0.9284994249703049,1.0,0.932790304107442,0.8394265002417961,0.9292183181671642
+"组合3（x_money_flow_index,x_open_interest...）",0.9894271052945351,0.932790304107442,1.0,0.9001560519806955,0.9910142533519745
+"组合4（x_money_flow_index,x_open_interest_1...）",0.9054590238441343,0.8394265002417961,0.9001560519806955,1.0,0.9050193630420895
+"组合5（x_money_flow_ratio,x_open_interest...）",0.9962728787624319,0.9292183181671642,0.9910142533519745,0.9050193630420895,1.0

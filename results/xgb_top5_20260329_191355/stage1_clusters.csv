@@ -1,0 +1,25 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,4,x_intraday_return_240min,0.4585149653993477,x_intraday_return_240min | x_return_1_240min | x_log_return_1_240min | x_price_reversal_240min
+2,5,x_ma5_ma20_60min,0.6699526776662206,x_ma5_ma20_60min | x_mfi_60min | x_money_flow_ratio_60min | x_vwap_dev_60min | x_bvwap_dev_60min
+3,4,x_vwap_slope_60min,0.4131089035556643,x_vwap_slope_60min | x_price_channel_breakout_60min | x_p_ret_4h | x_bvwap_slope_60min
+4,5,x_ma20_ma60_60min,0.6439212360564286,x_ma20_ma60_60min | x_ma5_ma20_240min | x_price_channel_breakout_240min | x_sar_diff_240min | x_mom5_240min
+5,5,x_price_ma250_dev_240min,0.7011771296578293,x_price_ma250_dev_240min | x_ma20_ma60_240min | x_boll_lower_60min | x_vwap_240min | x_bvwap_240min
+6,1,x_open_interest,0.37310021866973886,x_open_interest
+7,1,x_market_depth_imbalance_240min,0.3378221795100567,x_market_depth_imbalance_240min
+8,2,x_high_low_ratio_60min,0.6693379390272814,x_high_low_ratio_60min | x_fractal_dim_60min
+9,1,x_liquidity_60min,0.3708088403440217,x_liquidity_60min
+10,2,x_high_low_ratio_240min,0.6528590864939838,x_high_low_ratio_240min | x_vpin_240min
+11,1,x_vol_ma_ratio_240min,0.3690353086810427,x_vol_ma_ratio_240min
+12,1,x_cvd_60min,0.7277908748977328,x_cvd_60min
+13,1,x_distribute_60min,0.3441146076892435,x_distribute_60min
+14,1,x_volume_profile_240min,0.46381928085039464,x_volume_profile_240min
+15,2,x_is_night,0.7126184398964786,x_is_night | x_absorption_60min
+16,1,x_bvwap_v,0.38250893824110893,x_bvwap_v
+17,2,x_trend_break2_60min,0.5348156824440805,x_trend_break2_60min | x_trend_break_60min
+18,2,x_price_delta_trend_60min,0.7820422213832258,x_price_delta_trend_60min | x_spread_2h
+19,1,x_vol_mom_60min,0.47832373616866614,x_vol_mom_60min
+20,3,x_price_jump_240min,0.5823922674566682,x_price_jump_240min | x_price_jump_60min | x_fractal_dim_240min
+21,1,x_vpin_zscore_filtered_240min,0.6864659426754496,x_vpin_zscore_filtered_240min
+22,2,x_vol_change_rate_60min,0.7506097219079051,x_vol_change_rate_60min | x_vpin_zscore_filtered_60min
+23,1,x_skew_60min,0.3987047762419876,x_skew_60min
+24,1,x_ease_of_movement_60min,0.38205737882041363,x_ease_of_movement_60min

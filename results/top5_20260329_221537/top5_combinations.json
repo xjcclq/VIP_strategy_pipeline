@@ -1,0 +1,188 @@
+[
+  {
+    "rank": 1,
+    "oos_sharpe": 1.9186196208988375,
+    "score": 1.9088704127146443,
+    "mean_abs_corr": 0.03899683273677294,
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h",
+      "x_trend_8slot_1",
+      "x_cvd_8slot_1",
+      "x_liquidity_240min",
+      "x_hurst_240min",
+      "x_linearreg_ma_240min",
+      "x_price_delta_volume_8slot_1",
+      "x_price_jump_240min",
+      "x_ma_midday_ret_1",
+      "x_price_jump_8slot",
+      "x_session_sin_1",
+      "x_price_reversal_8slot_1",
+      "x_vol_change_rate_240min_1"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_trend_8slot_1",
+      "x_cvd_8slot_1",
+      "x_liquidity_240min",
+      "x_hurst_240min",
+      "x_linearreg_ma_240min",
+      "x_price_delta_volume_8slot_1",
+      "x_price_jump_240min",
+      "x_ma_midday_ret_1",
+      "x_price_jump_8slot",
+      "x_session_sin_1",
+      "x_price_reversal_8slot_1",
+      "x_vol_change_rate_240min_1"
+    ]
+  },
+  {
+    "rank": 2,
+    "oos_sharpe": 1.7896756053299412,
+    "score": 1.778692592882295,
+    "mean_abs_corr": 0.04393204979058483,
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h",
+      "x_trend_8slot",
+      "x_absorption_8slot",
+      "x_liquidity_240min",
+      "x_price_delta_volume_8slot",
+      "x_vol_change_rate_240min",
+      "x_price_jump_240min",
+      "x_ma_midday_ret_1",
+      "x_spread_2h",
+      "x_price_jump_8slot",
+      "x_price_reversal_8slot_1",
+      "x_sar_diff_240min_1"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_trend_8slot",
+      "x_absorption_8slot",
+      "x_liquidity_240min",
+      "x_price_delta_volume_8slot",
+      "x_vol_change_rate_240min",
+      "x_price_jump_240min",
+      "x_ma_midday_ret_1",
+      "x_spread_2h",
+      "x_price_jump_8slot",
+      "x_price_reversal_8slot_1",
+      "x_sar_diff_240min_1"
+    ]
+  },
+  {
+    "rank": 3,
+    "oos_sharpe": 1.9045049500235767,
+    "score": 1.8903743667661381,
+    "mean_abs_corr": 0.0565223330297543,
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h",
+      "x_trend_8slot_1",
+      "x_cvd_8slot_1",
+      "x_liquidity_240min",
+      "x_price_channel_breakout_8slot",
+      "x_hurst_240min_1",
+      "x_vol_change_rate_240min_1",
+      "x_ma_midday_ret_1",
+      "x_ma_bar_ret",
+      "x_trend_break_watch_8slot_1",
+      "x_session_sin_1",
+      "x_price_reversal_8slot_1",
+      "x_price_jump_240min_1"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_trend_8slot_1",
+      "x_cvd_8slot_1",
+      "x_liquidity_240min",
+      "x_price_channel_breakout_8slot",
+      "x_hurst_240min_1",
+      "x_vol_change_rate_240min_1",
+      "x_ma_midday_ret_1",
+      "x_ma_bar_ret",
+      "x_trend_break_watch_8slot_1",
+      "x_session_sin_1",
+      "x_price_reversal_8slot_1",
+      "x_price_jump_240min_1"
+    ]
+  },
+  {
+    "rank": 4,
+    "oos_sharpe": 1.8874677706803702,
+    "score": 1.8739938243687793,
+    "mean_abs_corr": 0.05389578524636388,
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h",
+      "x_trend_8slot_1",
+      "x_cvd_8slot_1",
+      "x_liquidity_240min",
+      "x_hurst_240min_1",
+      "x_vol_change_rate_240min_1",
+      "x_ma_midday_ret_1",
+      "x_spread_2h",
+      "x_trend_break_watch_8slot_1",
+      "x_session_sin_1"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_trend_8slot_1",
+      "x_cvd_8slot_1",
+      "x_liquidity_240min",
+      "x_hurst_240min_1",
+      "x_vol_change_rate_240min_1",
+      "x_ma_midday_ret_1",
+      "x_spread_2h",
+      "x_trend_break_watch_8slot_1",
+      "x_session_sin_1"
+    ]
+  },
+  {
+    "rank": 5,
+    "oos_sharpe": 1.6881184860636176,
+    "score": 1.6770036627783393,
+    "mean_abs_corr": 0.044459293141112834,
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h",
+      "x_distribute_8slot_1",
+      "x_trend_8slot",
+      "x_absorption_8slot",
+      "x_liquidity_240min",
+      "x_hurst_240min_1",
+      "x_price_jump_240min_1",
+      "x_ma_midday_ret_1",
+      "x_trend_break_watch_8slot_1",
+      "x_ma_bar_ret"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_distribute_8slot_1",
+      "x_trend_8slot",
+      "x_absorption_8slot",
+      "x_liquidity_240min",
+      "x_hurst_240min_1",
+      "x_price_jump_240min_1",
+      "x_ma_midday_ret_1",
+      "x_trend_break_watch_8slot_1",
+      "x_ma_bar_ret"
+    ]
+  }
+]

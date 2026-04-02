@@ -1,0 +1,2 @@
+﻿val_sharpe,test_sharpe,cv_score,mac,n_factors,factors
+5.225651994695822,1.4536920564541373,3.687951347396384,0.09216445518299805,8,x_adx|x_ma_bar_ret|x_skewness|x_stoch_k|x_amihud_volatility|x_volatility_ratio|x_open_interest|x_price_ma250_dev

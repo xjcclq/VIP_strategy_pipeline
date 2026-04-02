@@ -1,0 +1,17 @@
+棕榈油因子回测性能摘要
+==================================================
+total_return: 1.911544408088342
+annual_return: 0.26188094749830965
+volatility: 0.2504031973487079
+sharpe_ratio: 1.0458370750498767
+max_drawdown: -0.20040383803787984
+calmar_ratio: 1.3067661281457572
+sortino_ratio: 1.6257059063460177
+win_rate: 0.5150166852057843
+profit_loss_ratio: 1.1374953262698808
+benchmark_annual_return: 0.11658161348435933
+benchmark_sharpe: 0.40833958225605177
+information_ratio: 0.3173175556181356
+return_drawdown_ratio: 1.3067661281457572
+trade_count: 2605
+split_point: 2021-03-03 14:55:00

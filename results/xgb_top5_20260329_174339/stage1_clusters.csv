@@ -1,0 +1,21 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,3,x_high_low_ratio_60min,0.731667543082541,x_high_low_ratio_60min | x_high_low_ratio_240min | x_fractal_dim_60min
+2,3,x_vpin_240min,0.5300953163677435,x_vpin_240min | x_price_jump_240min | x_fractal_dim_240min
+3,1,x_cvd_60min,0.7741393661596256,x_cvd_60min
+4,2,x_is_night,0.6706972236402348,x_is_night | x_session_sin
+5,2,x_bvwap_v,0.5636687975701938,x_bvwap_v | x_bvwap_pv
+6,1,x_vol_ma_ratio_240min,0.3501275274156914,x_vol_ma_ratio_240min
+7,2,x_open_interest_y,0.5831094995301626,x_open_interest_y | x_open_interest_x
+8,2,x_turnover_x,0.33813928703536383,x_turnover_x | x_vwap_pv
+9,2,x_price_delta_volume_60min,0.4808042627286118,x_price_delta_volume_60min | x_vol_ma_ratio_60min
+10,2,x_vpin_zscore_filtered_240min,0.6059012000771341,x_vpin_zscore_filtered_240min | x_price_jump_60min
+11,3,x_vpin_zscore_filtered_60min,0.6269072624516674,x_vpin_zscore_filtered_60min | x_trend_break_watch_60min | x_price_impact_60min
+12,1,x_liquidity_240min,0.5918193607490088,x_liquidity_240min
+13,1,x_volume_profile_60min,0.35711248522109285,x_volume_profile_60min
+14,1,x_price_delta_trend_60min,0.7055393914313527,x_price_delta_trend_60min
+15,5,x_distribute_60min,0.685684137041349,x_distribute_60min | x_trend_60min | x_delta | x_effort_vs_result_60min | x_delta_x_vpin_60min
+16,4,x_ma5_ma20_240min,0.7939701070416948,x_ma5_ma20_240min | x_ma20_ma60_60min | x_vwap_dev_240min | x_sar_diff_240min
+17,3,x_ma20_ma60_240min,0.8262704105433909,x_ma20_ma60_240min | x_price_ma250_dev_240min | x_boll_lower_60min
+18,2,x_linearreg_ma_240min,0.3541569134492657,x_linearreg_ma_240min | x_volume_profile_240min
+19,2,x_ma_ret_20h,0.4321027608975968,x_ma_ret_20h | x_ma_midday_ret
+20,8,x_vwap_dev_60min,0.7824346824629713,x_vwap_dev_60min | x_ma5_ma20_60min | x_skew_60min | x_rvi_60min | x_price_channel_breakout_240min | x_vol_weighted_return_60min

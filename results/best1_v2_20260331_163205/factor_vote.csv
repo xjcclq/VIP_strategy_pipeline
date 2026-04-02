@@ -1,0 +1,8 @@
+﻿factor,votes,is_must
+x_hurst_exponent,1,False
+x_kyle_lambda_lag,1,False
+x_parabolic_sar,1,False
+x_accumulation_distribution,1,False
+x_price_volume_trend,1,False
+x_open_interest,1,False
+x_liquidity_indicator,1,False

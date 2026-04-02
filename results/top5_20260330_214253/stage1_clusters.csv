@@ -1,0 +1,19 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,9,x_ma5_ma20_60min,0.6446399780878813,x_ma5_ma20_60min | x_ma5_ma20_60min_1
+2,3,x_ma_bar_ret,0.5233251631760284,x_ma_bar_ret | x_ma_afternoon_ret
+3,3,x_price_jump_60min_1,0.6657275008991329,x_price_jump_60min_1 | x_price_jump_60min
+4,2,x_fractal_dim_240min_1,0.45710296486904906,x_fractal_dim_240min_1 | x_fractal_dim_240min
+5,2,x_price_jump_240min,0.6470092827135195,x_price_jump_240min | x_price_jump_240min_1
+6,2,x_vol_change_rate_60min_1,0.6104729455863039,x_vol_change_rate_60min_1 | x_vol_accel_60min_1
+7,1,x_vol_change_rate_60min,0.7629595990119333,x_vol_change_rate_60min
+8,1,x_is_night,0.46044279787421744,x_is_night
+9,2,x_trend_break_watch_60min,0.7204337083854231,x_trend_break_watch_60min | x_trend_break_watch_60min_1
+10,3,x_trend_break2_60min,0.6922823864158927,x_trend_break2_60min | x_trend_break_60min_1
+11,2,x_price_delta_trend_60min,0.7711598828520763,x_price_delta_trend_60min | x_price_delta_trend_60min_1
+12,2,x_cvd_60min,0.5674268819715611,x_cvd_60min | x_cvd_60min_1
+13,2,x_distribute_60min,0.49768251773026817,x_distribute_60min | x_distribute_60min_1
+14,2,x_high_low_ratio_240min,0.5860487221995894,x_high_low_ratio_240min | x_high_low_ratio_240min_1
+15,4,x_high_low_ratio_60min,0.5913936695583489,x_high_low_ratio_60min | x_high_low_ratio_60min_1
+16,2,x_vol_mom_60min_1,0.9399709122719857,x_vol_mom_60min_1 | x_vol_mom_60min
+17,4,x_ma5_ma20_240min,0.6192938846042197,x_ma5_ma20_240min | x_ma5_ma20_240min_1
+18,4,x_price_ma250_dev_240min_1,0.6284076984332023,x_price_ma250_dev_240min_1 | x_price_ma250_dev_240min

@@ -1,0 +1,76 @@
+{
+  "rank": 1,
+  "model": "xgb",
+  "factors": [
+    "x_ma_ret_4h",
+    "x_is_night",
+    "x_session_sin",
+    "x_amihud_volatility",
+    "x_price_impact",
+    "x_kyle_lambda_lag",
+    "x_price_ma250_dev",
+    "x_open_interest"
+  ],
+  "factor_cols": [
+    "x_ma_ret_4h",
+    "x_is_night",
+    "x_session_sin",
+    "x_amihud_volatility",
+    "x_price_impact",
+    "x_kyle_lambda_lag",
+    "x_price_ma250_dev",
+    "x_open_interest"
+  ],
+  "must_include": [
+    "x_ma_ret_4h",
+    "x_is_night",
+    "x_session_sin"
+  ],
+  "optional": [
+    "x_amihud_volatility",
+    "x_price_impact",
+    "x_kyle_lambda_lag",
+    "x_price_ma250_dev",
+    "x_open_interest"
+  ],
+  "val_split": "2022-01-01",
+  "test_split": "2023-06-01",
+  "check_days": 3,
+  "multiplier": 2.0,
+  "lag": 1,
+  "factor_lags": "",
+  "add_session_features": true,
+  "data_file": "F:\\VIP\\data\\P_with_ma_features.csv",
+  "start_date": "2018-04-17",
+  "train_window": 4000,
+  "retrain_freq": 1000,
+  "mode": "rolling",
+  "fwd": 3,
+  "use_scaler": true,
+  "reg_threshold": 0.0,
+  "close_threshold": [
+    0.0,
+    0.0
+  ],
+  "close_mode": "threshold",
+  "use_strength_filter": true,
+  "entry_strength_pct": 0.7,
+  "threshold_window": 50,
+  "cv_score": 1.6284084035733415,
+  "val_sharpe": 3.0747235625490728,
+  "test_sharpe": 0.8230225000666239,
+  "mac": 0.030923409224502974,
+  "cv_folds": 3,
+  "cv_lambda": 0.5,
+  "xgb_params": {
+    "n_estimators": 60,
+    "max_depth": 3,
+    "learning_rate": 0.03,
+    "subsample": 0.7,
+    "colsample_bytree": 0.5,
+    "min_child_weight": 50,
+    "reg_alpha": 1.0,
+    "reg_lambda": 8.0,
+    "top_n_features": 0
+  }
+}

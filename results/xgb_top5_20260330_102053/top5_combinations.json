@@ -1,0 +1,553 @@
+[
+  {
+    "rank": 1,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_volume_y",
+      "x_vol_mom_240min",
+      "x_open_interest_y",
+      "x_ma20_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_hurst_240min"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_volume_y",
+      "x_vol_mom_240min",
+      "x_open_interest_y",
+      "x_ma20_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_hurst_240min"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_volume_y",
+      "x_vol_mom_240min",
+      "x_open_interest_y",
+      "x_ma20_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_hurst_240min"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.97925329961222,
+    "score": 1.95811656226432,
+    "mean_abs_corr": 0.0845469493916003,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 2,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_mom_240min",
+      "x_open_interest_y",
+      "x_pvt_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_vol_change_rate_240min"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_mom_240min",
+      "x_open_interest_y",
+      "x_pvt_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_vol_change_rate_240min"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_mom_240min",
+      "x_open_interest_y",
+      "x_pvt_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_vol_change_rate_240min"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.955173859385275,
+    "score": 1.9350509877817272,
+    "mean_abs_corr": 0.08049148641419133,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 3,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_volume_y",
+      "x_open_interest_y",
+      "x_price_delta_volume_8slot",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_liquidity_240min"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_volume_y",
+      "x_open_interest_y",
+      "x_price_delta_volume_8slot",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_liquidity_240min"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_volume_y",
+      "x_open_interest_y",
+      "x_price_delta_volume_8slot",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_liquidity_240min"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.9393427665981768,
+    "score": 1.9150592853807,
+    "mean_abs_corr": 0.09713392486990682,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 4,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_change_rate_240min",
+      "x_vol_ma_ratio_240min",
+      "x_pvt_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_open_interest_x"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_change_rate_240min",
+      "x_vol_ma_ratio_240min",
+      "x_pvt_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_open_interest_x"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_bvwap_dev_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_change_rate_240min",
+      "x_vol_ma_ratio_240min",
+      "x_pvt_8slot",
+      "x_cvd_8slot",
+      "x_price_jump_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_open_interest_x"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.9484155048026035,
+    "score": 1.9272498595168983,
+    "mean_abs_corr": 0.08466258114282121,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 5,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_roc_8slot",
+      "x_sar_diff_240min",
+      "x_vol_change_rate_240min",
+      "x_open_interest_x",
+      "x_fractal_dim_8slot",
+      "x_cvd_8slot",
+      "x_overnight_vol_8slot",
+      "x_trend1_8slot",
+      "x_distribute_8slot"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_roc_8slot",
+      "x_sar_diff_240min",
+      "x_vol_change_rate_240min",
+      "x_open_interest_x",
+      "x_fractal_dim_8slot",
+      "x_cvd_8slot",
+      "x_overnight_vol_8slot",
+      "x_trend1_8slot",
+      "x_distribute_8slot"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_roc_8slot",
+      "x_sar_diff_240min",
+      "x_vol_change_rate_240min",
+      "x_open_interest_x",
+      "x_fractal_dim_8slot",
+      "x_cvd_8slot",
+      "x_overnight_vol_8slot",
+      "x_trend1_8slot",
+      "x_distribute_8slot"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.8165069641547082,
+    "score": 1.7904324079928764,
+    "mean_abs_corr": 0.10429822464732712,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  }
+]

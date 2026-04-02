@@ -1,0 +1,6 @@
+﻿rank,val_sharpe,test_sharpe,cv_score,mac,n_factors,optional
+1,0.7444798747270167,1.0503765549785895,2.7292477535655157,0.06985039248220236,6,x_amihud_volatility|x_price_volume_trend_1|x_session_sin_1|x_price_impact
+2,0.6818759471578042,2.2550046195973747,2.724032279267581,0.11158241693992796,7,x_ma_ret_20h|x_price_volume_trend_1|x_volume_profile_indicator|x_is_night_1|x_spread_8h
+3,0.9396144763315086,1.3577623896090059,2.7264877478432927,0.08856003028364864,5,x_amihud_volatility_1|x_price_volume_trend_1|x_session_sin_1
+4,0.8889112621933049,2.0799621546503846,2.7240373749986837,0.11156203401551763,6,x_ma_ret_12h|x_price_volume_trend_1|x_is_night_1|x_volume_ma_ratio_1
+5,1.2137382574126128,2.3188326820949112,2.7226233129934583,0.11721828203641879,6,x_ma_ret_20h|x_price_volume_trend_1|x_volume_profile_indicator|x_is_night_1

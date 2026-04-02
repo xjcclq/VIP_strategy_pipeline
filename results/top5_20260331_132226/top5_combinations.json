@@ -1,0 +1,198 @@
+[
+  {
+    "rank": 1,
+    "oos_sharpe": 2.0289330160616035,
+    "score": 2.016554669610776,
+    "mean_abs_corr": 0.04951338580331098,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_money_flow_ratio",
+      "x_open_interest",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_hurst_exponent",
+      "x_volume_ma_ratio_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_indicator",
+      "x_aroon_up",
+      "x_price_jump_1",
+      "x_spread_20h_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_money_flow_ratio",
+      "x_open_interest",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_hurst_exponent",
+      "x_volume_ma_ratio_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_indicator",
+      "x_aroon_up",
+      "x_price_jump_1",
+      "x_spread_20h_1"
+    ]
+  },
+  {
+    "rank": 2,
+    "oos_sharpe": 1.996664158758828,
+    "score": 1.9845632127034776,
+    "mean_abs_corr": 0.04840378422140189,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_money_flow_index",
+      "x_open_interest",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_volume_ma_ratio_1",
+      "x_session_sin_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_fast",
+      "x_aroon_up",
+      "x_spread_20h_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_money_flow_index",
+      "x_open_interest",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_volume_ma_ratio_1",
+      "x_session_sin_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_fast",
+      "x_aroon_up",
+      "x_spread_20h_1"
+    ]
+  },
+  {
+    "rank": 3,
+    "oos_sharpe": 1.9982063633153375,
+    "score": 1.985526314704181,
+    "mean_abs_corr": 0.050720194444625624,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_money_flow_index",
+      "x_open_interest",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_volume_ma_ratio_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_fast",
+      "x_aroon_up",
+      "x_spread_20h_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_money_flow_index",
+      "x_open_interest",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_volume_ma_ratio_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_fast",
+      "x_aroon_up",
+      "x_spread_20h_1"
+    ]
+  },
+  {
+    "rank": 4,
+    "oos_sharpe": 1.959550438679661,
+    "score": 1.947231782883619,
+    "mean_abs_corr": 0.04927462318416818,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_money_flow_index",
+      "x_open_interest_1",
+      "x_liquidity_indicator_1",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_volume_ma_ratio_1",
+      "x_spread_20h",
+      "x_kyle_lambda_lag",
+      "x_is_night_1",
+      "x_volume_profile_fast",
+      "x_aroon_up_1",
+      "x_price_jump_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_money_flow_index",
+      "x_open_interest_1",
+      "x_liquidity_indicator_1",
+      "x_price_impact_1",
+      "x_hurst_exponent_1",
+      "x_volume_ma_ratio_1",
+      "x_spread_20h",
+      "x_kyle_lambda_lag",
+      "x_is_night_1",
+      "x_volume_profile_fast",
+      "x_aroon_up_1",
+      "x_price_jump_1"
+    ]
+  },
+  {
+    "rank": 5,
+    "oos_sharpe": 1.9875891245265318,
+    "score": 1.9752632764134266,
+    "mean_abs_corr": 0.049303392452420935,
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_4h",
+      "x_money_flow_ratio",
+      "x_open_interest",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_volume_ma_ratio_1",
+      "x_spread_20h_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_indicator",
+      "x_aroon_up",
+      "x_price_jump_1",
+      "x_hurst_exponent_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_money_flow_ratio",
+      "x_open_interest",
+      "x_liquidity_indicator",
+      "x_price_impact_1",
+      "x_volume_ma_ratio_1",
+      "x_spread_20h_1",
+      "x_kyle_lambda_lag_1",
+      "x_is_night_1",
+      "x_volume_profile_indicator",
+      "x_aroon_up",
+      "x_price_jump_1",
+      "x_hurst_exponent_1"
+    ]
+  }
+]

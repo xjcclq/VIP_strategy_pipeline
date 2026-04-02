@@ -1,0 +1,180 @@
+[
+  {
+    "rank": 1,
+    "oos_sharpe": 1.0025221303304166,
+    "score": 0.9870744024436288,
+    "mean_abs_corr": 0.06179091154715119,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma_bar_ret",
+      "x_vol_change_rate_60min",
+      "x_is_night",
+      "x_trend_break_watch_60min",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_high_low_ratio_240min",
+      "x_vol_mom_60min_1",
+      "x_price_ma250_dev_240min_1",
+      "x_price_jump_60min_1"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma_bar_ret",
+      "x_vol_change_rate_60min",
+      "x_is_night",
+      "x_trend_break_watch_60min",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_high_low_ratio_240min",
+      "x_vol_mom_60min_1",
+      "x_price_ma250_dev_240min_1",
+      "x_price_jump_60min_1"
+    ]
+  },
+  {
+    "rank": 2,
+    "oos_sharpe": 0.9471884177852882,
+    "score": 0.9293560342032542,
+    "mean_abs_corr": 0.07132953432813577,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma_bar_ret",
+      "x_price_jump_60min",
+      "x_is_night",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min",
+      "x_high_low_ratio_60min_1",
+      "x_ma5_ma20_240min_1",
+      "x_price_ma250_dev_240min_1",
+      "x_vol_mom_60min_1"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma_bar_ret",
+      "x_price_jump_60min",
+      "x_is_night",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min",
+      "x_high_low_ratio_60min_1",
+      "x_ma5_ma20_240min_1",
+      "x_price_ma250_dev_240min_1",
+      "x_vol_mom_60min_1"
+    ]
+  },
+  {
+    "rank": 3,
+    "oos_sharpe": 0.9770610345752995,
+    "score": 0.9530322232257268,
+    "mean_abs_corr": 0.09611524539829086,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma_bar_ret",
+      "x_fractal_dim_240min",
+      "x_vol_change_rate_60min",
+      "x_is_night",
+      "x_trend_break_watch_60min_1",
+      "x_trend_break2_60min",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_240min",
+      "x_price_ma250_dev_240min_1",
+      "x_distribute_60min_1"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma_bar_ret",
+      "x_fractal_dim_240min",
+      "x_vol_change_rate_60min",
+      "x_is_night",
+      "x_trend_break_watch_60min_1",
+      "x_trend_break2_60min",
+      "x_cvd_60min_1",
+      "x_high_low_ratio_240min",
+      "x_price_ma250_dev_240min_1",
+      "x_distribute_60min_1"
+    ]
+  },
+  {
+    "rank": 4,
+    "oos_sharpe": 0.99507166032754,
+    "score": 0.9742142638608047,
+    "mean_abs_corr": 0.0834295858669415,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma_bar_ret",
+      "x_is_night",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_high_low_ratio_240min",
+      "x_vol_mom_60min_1",
+      "x_price_ma250_dev_240min_1"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma_bar_ret",
+      "x_is_night",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_high_low_ratio_240min",
+      "x_vol_mom_60min_1",
+      "x_price_ma250_dev_240min_1"
+    ]
+  },
+  {
+    "rank": 5,
+    "oos_sharpe": 0.9503059847645697,
+    "score": 0.9287136549353234,
+    "mean_abs_corr": 0.08636931931698523,
+    "factors": [
+      "x_vwap_60min",
+      "x_ma_ret_4h",
+      "x_ma_bar_ret",
+      "x_vol_change_rate_60min",
+      "x_is_night",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_high_low_ratio_60min_1",
+      "x_vol_mom_60min_1",
+      "x_price_ma250_dev_240min_1",
+      "x_high_low_ratio_240min"
+    ],
+    "must_include": [
+      "x_vwap_60min",
+      "x_ma_ret_4h"
+    ],
+    "optional": [
+      "x_ma_bar_ret",
+      "x_vol_change_rate_60min",
+      "x_is_night",
+      "x_trend_break_60min_1",
+      "x_cvd_60min_1",
+      "x_distribute_60min_1",
+      "x_high_low_ratio_60min_1",
+      "x_vol_mom_60min_1",
+      "x_price_ma250_dev_240min_1",
+      "x_high_low_ratio_240min"
+    ]
+  }
+]

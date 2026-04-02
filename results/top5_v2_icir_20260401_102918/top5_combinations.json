@@ -1,0 +1,344 @@
+[
+  {
+    "rank": 1,
+    "model": "wls",
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_volume_ma_ratio_1"
+    ],
+    "factor_cols": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_volume_ma_ratio_1"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_volume_ma_ratio_1"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "val_split": "2023-04-01",
+    "test_split": "2024-10-01",
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "data_file": "F:\\VIP\\data\\P_with_ma_features.csv",
+    "start_date": "2020-10-01",
+    "train_window": 3000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "val_cv_score": -0.00046777780678607713,
+    "test_sharpe": 1.7226065429920387,
+    "mac": 0.0018711112271443074,
+    "cv_folds": 3,
+    "cv_lambda": 1.0
+  },
+  {
+    "rank": 2,
+    "model": "wls",
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "factor_cols": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "optional": [],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "val_split": "2023-04-01",
+    "test_split": "2024-10-01",
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "data_file": "F:\\VIP\\data\\P_with_ma_features.csv",
+    "start_date": "2020-10-01",
+    "train_window": 3000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "val_cv_score": -0.000649529013779862,
+    "test_sharpe": 1.2415453430014827,
+    "mac": 0.002598116055119435,
+    "cv_folds": 3,
+    "cv_lambda": 1.0
+  },
+  {
+    "rank": 3,
+    "model": "wls",
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_volume_ma_ratio"
+    ],
+    "factor_cols": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_volume_ma_ratio"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_volume_ma_ratio"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "val_split": "2023-04-01",
+    "test_split": "2024-10-01",
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "data_file": "F:\\VIP\\data\\P_with_ma_features.csv",
+    "start_date": "2020-10-01",
+    "train_window": 3000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "val_cv_score": -0.0006511512366623702,
+    "test_sharpe": 1.3450174321651498,
+    "mac": 0.0026046049466494797,
+    "cv_folds": 3,
+    "cv_lambda": 1.0
+  },
+  {
+    "rank": 4,
+    "model": "wls",
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_kurtosis",
+      "x_volume_ma_ratio"
+    ],
+    "factor_cols": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_kurtosis",
+      "x_volume_ma_ratio"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_kurtosis",
+      "x_volume_ma_ratio"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "val_split": "2023-04-01",
+    "test_split": "2024-10-01",
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "data_file": "F:\\VIP\\data\\P_with_ma_features.csv",
+    "start_date": "2020-10-01",
+    "train_window": 3000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "val_cv_score": -0.008178273545150614,
+    "test_sharpe": 1.4858750273981356,
+    "mac": 0.032713094180602455,
+    "cv_folds": 3,
+    "cv_lambda": 1.0
+  },
+  {
+    "rank": 5,
+    "model": "wls",
+    "factors": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_volume_ma_ratio_1",
+      "x_spread_8h"
+    ],
+    "factor_cols": [
+      "x_vwap",
+      "x_ma_ret_icir",
+      "x_volume_ma_ratio_1",
+      "x_spread_8h"
+    ],
+    "must_include": [
+      "x_vwap",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_volume_ma_ratio_1",
+      "x_spread_8h"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "val_split": "2023-04-01",
+    "test_split": "2024-10-01",
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 2,
+    "factor_lags": "",
+    "data_file": "F:\\VIP\\data\\P_with_ma_features.csv",
+    "start_date": "2020-10-01",
+    "train_window": 3000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "val_cv_score": -0.005977309639265911,
+    "test_sharpe": 1.4724864470498176,
+    "mac": 0.023909238557063645,
+    "cv_folds": 3,
+    "cv_lambda": 1.0
+  }
+]

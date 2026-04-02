@@ -1,0 +1,574 @@
+[
+  {
+    "rank": 1,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_turnover_y",
+      "x_vol_mom_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_240min",
+      "x_overnight_vol_8slot",
+      "x_distribute_8slot",
+      "x_turnover_x"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_turnover_y",
+      "x_vol_mom_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_240min",
+      "x_overnight_vol_8slot",
+      "x_distribute_8slot",
+      "x_turnover_x"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_turnover_y",
+      "x_vol_mom_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_240min",
+      "x_overnight_vol_8slot",
+      "x_distribute_8slot",
+      "x_turnover_x"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 1,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.8901658291932024,
+    "score": 1.8612597286232626,
+    "mean_abs_corr": 0.11562440227975955,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 2,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_p_ret_12h",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_turnover_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_rel_vol_240min"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_p_ret_12h",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_turnover_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_rel_vol_240min"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_linearreg_ma_240min",
+      "x_p_ret_12h",
+      "x_price_channel_breakout_8slot",
+      "x_macd_hist_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_turnover_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_overnight_return_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_liquidity_240min",
+      "x_rel_vol_240min"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 1,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.8627415941388796,
+    "score": 1.8369856784066294,
+    "mean_abs_corr": 0.10302366292900045,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 3,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_240min",
+      "x_macd_hist_240min",
+      "x_vol_change_rate_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_vwap_pv",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_240min",
+      "x_distribute_8slot",
+      "x_overnight_return_8slot"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_240min",
+      "x_macd_hist_240min",
+      "x_vol_change_rate_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_vwap_pv",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_240min",
+      "x_distribute_8slot",
+      "x_overnight_return_8slot"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_240min",
+      "x_macd_hist_240min",
+      "x_vol_change_rate_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_vwap_pv",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_price_jump_240min",
+      "x_distribute_8slot",
+      "x_overnight_return_8slot"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 1,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.8670157823895261,
+    "score": 1.8410493748766676,
+    "mean_abs_corr": 0.10386563005143366,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 4,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_price_channel_breakout_240min",
+      "x_sar_diff_240min",
+      "x_rel_vol_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_gap_ratio_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_roc_8slot"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_price_channel_breakout_240min",
+      "x_sar_diff_240min",
+      "x_rel_vol_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_gap_ratio_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_roc_8slot"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_linearreg_ma_240min",
+      "x_price_channel_breakout_240min",
+      "x_sar_diff_240min",
+      "x_rel_vol_240min",
+      "x_vol_ma_ratio_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_gap_ratio_8slot",
+      "x_trend_8slot",
+      "x_distribute_8slot",
+      "x_roc_8slot"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 1,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.8056431709309824,
+    "score": 1.777500501696045,
+    "mean_abs_corr": 0.11257067693974977,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  },
+  {
+    "rank": 5,
+    "model": "xgb",
+    "factors": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_240min",
+      "x_macd_hist_240min",
+      "x_rel_vol_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_obv_240min",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_gap_ratio_8slot",
+      "x_trend1_8slot",
+      "x_distribute_8slot"
+    ],
+    "factor_cols": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir",
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_240min",
+      "x_macd_hist_240min",
+      "x_rel_vol_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_obv_240min",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_gap_ratio_8slot",
+      "x_trend1_8slot",
+      "x_distribute_8slot"
+    ],
+    "must_include": [
+      "x_vwap_8slot",
+      "x_ma_ret_icir"
+    ],
+    "optional": [
+      "x_linearreg_ma_240min",
+      "x_ease_of_movement_8slot",
+      "x_price_channel_breakout_240min",
+      "x_macd_hist_240min",
+      "x_rel_vol_240min",
+      "x_open_interest_x",
+      "x_pvt_8slot",
+      "x_obv_240min",
+      "x_high_low_ratio_240min",
+      "x_cvd_8slot",
+      "x_gap_ratio_8slot",
+      "x_trend1_8slot",
+      "x_distribute_8slot"
+    ],
+    "icir_groups": {
+      "x_ma_ret_icir": {
+        "sub_clusters": {
+          "short": [
+            "x_ma_ret_1h",
+            "x_ma_ret_2h"
+          ],
+          "mid": [
+            "x_ma_ret_4h",
+            "x_ma_ret_6h"
+          ],
+          "long": [
+            "x_ma_ret_8h",
+            "x_ma_ret_12h"
+          ]
+        },
+        "icir_min": 0.3
+      }
+    },
+    "icir_window": 2000,
+    "check_days": 3,
+    "multiplier": 2.0,
+    "lag": 1,
+    "factor_lags": "",
+    "add_session_features": true,
+    "data_file": "F:\\VIP\\data\\P_60min_with_ma_features_from_scratch.csv",
+    "start_date": "2018-04-17",
+    "train_window": 4000,
+    "retrain_freq": 1000,
+    "mode": "rolling",
+    "fwd": 3,
+    "use_scaler": true,
+    "reg_threshold": 0.0,
+    "close_threshold": [
+      0.0,
+      0.0
+    ],
+    "close_mode": "threshold",
+    "use_strength_filter": true,
+    "entry_strength_pct": 0.7,
+    "threshold_window": 50,
+    "oos_sharpe": 1.819558789434383,
+    "score": 1.7885160216117926,
+    "mean_abs_corr": 0.12417107129036137,
+    "xgb_params": {
+      "n_estimators": 300,
+      "max_depth": 3,
+      "learning_rate": 0.03,
+      "subsample": 0.7,
+      "colsample_bytree": 0.5,
+      "min_child_weight": 20,
+      "reg_alpha": 1.0,
+      "reg_lambda": 8.0,
+      "top_n_features": 0
+    }
+  }
+]

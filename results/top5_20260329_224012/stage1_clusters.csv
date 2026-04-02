@@ -1,0 +1,23 @@
+﻿cluster_id,size,top_factor,best_res_ic_ir,candidates
+1,2,x_price_delta_trend_8slot,0.5814282949684886,x_price_delta_trend_8slot | x_price_delta_trend_8slot_1
+2,2,x_obv_240min,0.4358006737778618,x_obv_240min | x_obv_240min_1
+3,8,x_price_ma250_dev_240min,0.5147320168810056,x_price_ma250_dev_240min | x_price_ma250_dev_240min_1
+4,2,x_distribute_8slot,0.5029147353315568,x_distribute_8slot | x_distribute_8slot_1
+5,2,x_trend_8slot_1,0.8948087591164161,x_trend_8slot_1 | x_trend_8slot
+6,2,x_absorption_8slot_1,0.46375887575206004,x_absorption_8slot_1 | x_absorption_8slot
+7,2,x_close_pos_ratio_8slot,0.44599952747046623,x_close_pos_ratio_8slot | x_ofi_8slot
+8,2,x_cvd_8slot_1,0.4058509000795883,x_cvd_8slot_1 | x_cvd_8slot
+9,2,x_liquidity_240min_1,0.39581344872282703,x_liquidity_240min_1 | x_liquidity_240min
+10,2,x_sar_diff_240min_1,0.40692230859459294,x_sar_diff_240min_1 | x_sar_diff_240min
+11,2,x_price_channel_breakout_8slot,0.4422869480765049,x_price_channel_breakout_8slot | x_price_channel_breakout_8slot_1
+12,2,x_hurst_240min,0.3736791841220822,x_hurst_240min | x_hurst_240min_1
+13,2,x_linearreg_ma_240min_1,0.4186206975229379,x_linearreg_ma_240min_1 | x_linearreg_ma_240min
+14,1,x_volume_profile_240min_1,0.3852374047188123,x_volume_profile_240min_1
+15,2,x_price_delta_volume_8slot_1,0.608920653110631,x_price_delta_volume_8slot_1 | x_price_delta_volume_8slot
+16,5,x_vol_change_rate_240min,0.7215070145039957,x_vol_change_rate_240min | x_vol_change_rate_240min_1
+17,2,x_price_jump_240min_1,1.0870138665073088,x_price_jump_240min_1 | x_price_jump_240min
+18,1,x_ma_midday_ret_1,0.3827354031552253,x_ma_midday_ret_1
+19,3,x_ma_bar_ret,0.4772754027464961,x_ma_bar_ret | x_spread_2h
+20,2,x_trend_break_watch_8slot_1,0.9247305845622887,x_trend_break_watch_8slot_1 | x_price_jump_8slot
+21,1,x_session_sin_1,0.8348978587336269,x_session_sin_1
+22,1,x_price_reversal_8slot_1,0.36051861494208653,x_price_reversal_8slot_1

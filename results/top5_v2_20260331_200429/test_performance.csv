@@ -1,0 +1,6 @@
+﻿rank,val_sharpe,test_sharpe,cv_score,mac,n_factors,optional
+1,2.1209230017114953,0.12426193067134825,1.9486277312975906,0.12175811288264685,11,x_session_sin|x_spread_12h|x_price_delta_trend|x_absorption|x_ma_ret_20h|x_ma_ret_6h|x_price_volume_trend_1|x_cvd|x_is_night
+2,2.174605197652573,-0.16504198712975118,1.9044662105766463,0.12063594964377218,11,x_session_sin|x_spread_20h|x_price_delta_trend|x_absorption|x_ma_ret_20h|x_is_night_1|x_price_volume_trend_1|x_cvd|x_ma_ret_6h
+3,2.3530392902700847,0.7983614432835542,1.537198865851773,0.09652159089543204,11,x_session_sin|x_spread_20h|x_price_delta_trend|x_absorption|x_ma_ret_20h|x_volume_profile_indicator|x_is_night_1|x_cvd|x_price_volume_trend
+4,2.024413569280252,-0.20190539670218716,1.5801224736450308,0.11044016453196652,9,x_volume_ma_ratio_1|x_price_delta_trend|x_absorption|x_ma_ret_12h|x_is_night_1|x_price_volume_trend_1|x_cvd
+5,1.9253822140507189,-0.2903618119518516,1.4539772815680085,0.09233907373699288,8,x_volume_ma_ratio_1|x_spread_20h|x_price_delta_trend|x_ma_ret_12h|x_is_night_1|x_price_volume_trend_1
