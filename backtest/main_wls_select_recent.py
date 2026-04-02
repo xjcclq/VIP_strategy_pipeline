@@ -67,7 +67,7 @@ from utils2 import (
 
 # ══════════════════════════════════════════════════════════════════════════════
 MUST_INCLUDE: list[str] = [
-    "x_vwap",
+    "x_vwap_8slot",
     "x_ma_ret_4h",
     # "x_ma_afternoon_ret",
     # 'x_马来RBD棕榈油离岸价',
@@ -80,14 +80,14 @@ MUST_INCLUDE: list[str] = [
 ]
 
 N_COMBOS   = 5      # 目标组合数
-POOL_SIZE  = 10     # Stage2/3 候选池大小（缩小以加速）
+POOL_SIZE  = 30     # Stage2/3 候选池大小（缩小以加速）
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 def parse_arguments():
     p = argparse.ArgumentParser()
     # p.add_argument("--data_file",  default=r"G:\pail_oil_cta\data_process\data\output\P_60min_with_ma_features_from_scratch.csv")
-    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_with_ma_features.csv"))
+    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_60min_with_ma_features_from_scratch.csv"))
     # p.add_argument("--data_file",  default=r"G:\pail_oil_cta\data_process\data\output\Palm_oil.csv")
     p.add_argument("--start_date", default="2018-04-17")
     p.add_argument("--train_window",   type=int,   default=4000)
@@ -130,6 +130,8 @@ def parse_arguments():
                    help="多样性权重：0=纯 Score 排名，1=纯多样性")
     p.add_argument("--min_oos_sharpe",  type=float, default=-0.5,
                    help="候选组合 OOS Sharpe 最低门槛（过滤垃圾组合）")
+    p.add_argument("--oos_recent_days", type=int, default=252,
+                   help="OOS Sharpe 只取最近 N 个交易日（默认252≈1年），0=全部OOS")
     p.add_argument("--resume",    action="store_true", default=False)
     p.add_argument("--study_path",default="")
     return p.parse_args()
@@ -187,6 +189,11 @@ def _score(oos: float, mac: float, pw: float) -> float:
 
 
 def _get_oos_sharpe(results_df: pd.DataFrame, args) -> float:
+    """近一年 OOS 夏普（优化目标）。
+
+    只取 OOS 区间中最近 252 个交易日的收益来计算 Sharpe，
+    让优化器聚焦于近期表现而非历史均值。
+    """
     split = getattr(args, "split_point", None)
     fwd   = getattr(args, "fwd", 1)
     if split is None or split not in results_df.index:
@@ -197,7 +204,12 @@ def _get_oos_sharpe(results_df: pd.DataFrame, args) -> float:
         return -999.0
     key = pd.to_datetime(out_df.index).normalize()
     d   = out_df.groupby(key).agg(r=("strategy_return","sum"), sw=("is_switch","any"))
-    r   = d[~d["sw"]]["r"].values
+    d   = d[~d["sw"]]
+    # ★ 只取最近 252 个交易日（约一年）
+    recent_days = getattr(args, "oos_recent_days", 252)
+    if recent_days > 0 and len(d) > recent_days:
+        d = d.iloc[-recent_days:]
+    r = d["r"].values
     return float(calc_metrics_from_returns(r)["sharpe_ratio"]) if len(r) >= 20 else -999.0
 
 
@@ -495,8 +507,6 @@ def stage3_refine_one(
             break
         current, cur_score, oos_s = best_move
 
-
-
     return current, cur_score, oos_s
 
 
@@ -625,6 +635,8 @@ def main():
     print(f"  Stage2: {args.n_trials} trials  penalty={args.corr_penalty_w}")
     print(f"  Stage3: refine_iters={args.refine_iters}")
     print(f"  Stage4: diversity_w={args.diversity_w}  min_oos={args.min_oos_sharpe}")
+    print(f"  ★ OOS优化目标: 近{args.oos_recent_days}交易日夏普" if args.oos_recent_days > 0
+          else f"  ★ OOS优化目标: 全部OOS夏普")
     print(SEP)
 
     df = load_palm_oil_data(args.data_file)

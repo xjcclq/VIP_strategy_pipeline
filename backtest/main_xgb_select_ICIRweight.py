@@ -19,6 +19,12 @@ factor_search_xgb_top5.py — XGBoost 后端，挑出 5 组相关性低的优质
               · "信号相关性" = 各组回测 strategy_return 的 Pearson 相关
               · 复用 Stage 3 缓存的 results_df（省去重复回测）
 
+因子合成（★ ICIR 分层加权，替代 PCA）
+  · 同族因子（如 x_ma_ret_1h ~ 12h）先按时间尺度硬编码分子簇
+  · 子簇内滚动 ICIR 加权合成（窗口=icir_window，跟随 retrain_freq 更新）
+  · 子簇间再做一次 ICIR 加权，得到最终合成因子
+  · ICIR 低于阈值的因子动态剔除（权重置零）
+
 因子 ↔ PnL 一致性保证（★ 修复）
   · _backtest_quick 和 _backtest_full 均强制 top_n_features=0
     ── 精修和最终 PnL 使用完全相同的特征集，JSON 保存因子 = 模型实际使用因子
@@ -49,6 +55,7 @@ import warnings
 import argparse
 from pathlib import Path
 import os
+
 import numpy as np
 import pandas as pd
 from scipy.cluster.hierarchy import linkage, fcluster
@@ -85,11 +92,45 @@ from utils2 import (
     _compute_reversal_labels,
 )
 
+# ══════════════════════════════════════════════════════════════════════════════
+# ── 族内分层 ICIR 加权配置（替代 PCA）─────────────────────────────────────────
+#
+# key   = 合成后的新因子名（会被注入 select_fd / base_fd）
+# value = dict:
+#     "sub_clusters": 按时间尺度硬编码的子簇分组
+#     "icir_min":     子簇内 ICIR 低于此阈值的因子权重置零（动态剔除）
+#
+# 合成方式：
+#   1) 子簇内：滚动 ICIR 加权（窗口=icir_window，跟随 retrain_freq 更新）
+#   2) 子簇间：再做一次 ICIR 加权，得到最终合成因子
+#
+# 原始族因子（x_ma_ret_1h ~ 12h）会从 select_fd / base_fd 中删除，
+# 避免它们再次进入可选池与合成因子重复。
+FACTOR_ICIR_GROUPS: dict[str, dict] = {
+    "x_ma_ret_icir": {
+        "sub_clusters": {
+            "short":  ["x_ma_ret_1h", "x_ma_ret_2h"],
+            "mid":    ["x_ma_ret_4h", "x_ma_ret_6h"],
+            "long":   ["x_ma_ret_8h", "x_ma_ret_12h"],
+        },
+        "icir_min": 0.3,   # 子簇内 ICIR 低于此值则剔除
+    },
+    # 如需压缩其他族，继续添加，例如：
+    # "x_vwap_icir": {
+    #     "sub_clusters": {
+    #         "short": ["x_vwap_30min", "x_vwap_60min"],
+    #         "long":  ["x_vwap_120min", "x_vwap_240min"],
+    #     },
+    #     "icir_min": 0.3,
+    # },
+}
 
-
+# 合成后进入 MUST_INCLUDE 的因子（使用合成因子名）
 MUST_INCLUDE: list[str] = [
-    "x_vwap",
-    "x_ma_ret_4h",
+    "x_vwap_8slot",
+    "x_ma_ret_icir",   # ← 由 FACTOR_ICIR_GROUPS 滚动 ICIR 加权生成
+    # "x_ma_afternoon_ret",
+    # 'x_马来RBD棕榈油离岸价',
 ]
 
 N_COMBOS  = 5    # 目标组合数
@@ -106,8 +147,7 @@ def parse_arguments():
     )
 
     # ── 数据 ──────────────────────────────────────────────────────────────
-    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_with_ma_features.csv"))
-    # p.add_argument("--data_file",  default=r"G:\pail_oil_cta\data_process\data\output\Palm_oil.csv")
+    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_60min_with_ma_features_from_scratch.csv"))
     p.add_argument("--start_date", default="2018-04-17")
 
     # ── 模型选择（保留 wls 作为备用，主流程默认 xgb）──────────────────────
@@ -119,7 +159,7 @@ def parse_arguments():
     p.add_argument("--mode",          default="rolling", choices=["rolling", "expanding"])
     p.add_argument("--retrain_freq",  type=int,   default=1000)
     p.add_argument("--fwd",           type=int,   default=3)
-    p.add_argument("--lag",           type=int,   default=1)
+    p.add_argument("--lag",           type=int,   default=2)
     p.add_argument("--factor_lags",   default="")
     p.add_argument("--use_scaler",    action="store_true",  default=True)
     p.add_argument("--no_scaler",     action="store_false", dest="use_scaler")
@@ -136,7 +176,6 @@ def parse_arguments():
     p.add_argument("--rolling_window", type=int, default=1000)
 
     # ── XGBoost 专属 ──────────────────────────────────────────────────────
-    # ★ top_n_features 仅影响 ensemble 阶段，搜索阶段全程强制 0
     p.add_argument("--top_n_features",   type=int,   default=0,
                    help="[XGB] 仅供 ensemble 阶段参考；搜索/保存阶段固定为 0")
     p.add_argument("--n_estimators",     type=int,   default=300)
@@ -166,13 +205,20 @@ def parse_arguments():
     p.add_argument("--ic_threshold",    type=float, default=0.02)
     p.add_argument("--n_clusters",      type=int,   default=0,
                    help="目标簇数，0=自动（Ward 距离截断）")
-    p.add_argument("--corr_cluster_t",  type=float, default=0.55)
+    p.add_argument("--corr_cluster_t",  type=float, default=0.8)  # 增大 args.corr_cluster_t → 放宽聚类条件 → 簇变大、数量变少 0.55
     p.add_argument("--top_per_cluster", type=int,   default=6,
                    help="每簇保留 top-M 个候选")
     p.add_argument("--min_cluster_ic",  type=float, default=0.01)
-    p.add_argument("--max_factors",     type=int,   default=50,
+    p.add_argument("--max_factors",     type=int,   default=100,
                    help="★ 进入聚类的因子上限（按残差IC-IR截断），0=不限。"
                         "XGBoost对共线性不敏感，推荐50")
+
+    # ── ICIR 加权合成 ────────────────────────────────────────────────────
+    p.add_argument("--icir_window",     type=int,   default=2000,
+                   help="★ ICIR 计算滚动窗口（bar 数），建议 train_window 的 1/2~3/4")
+    p.add_argument("--icir_min",        type=float, default=0.3,
+                   help="ICIR 低于此值的因子权重置零（动态剔除），"
+                        "可被 FACTOR_ICIR_GROUPS 中的 icir_min 覆盖")
 
     # ── Stage 2 ───────────────────────────────────────────────────────────
     p.add_argument("--n_trials",         type=int,   default=150,
@@ -184,7 +230,7 @@ def parse_arguments():
 
     # ── Stage 3 ───────────────────────────────────────────────────────────
     p.add_argument("--refine_iters",     type=int,   default=1,
-                   help="精修轮数（XGB较慢，默认2轮）")
+                   help="精修轮数（XGB较慢，默认1轮）")
 
     # ── Stage 4 ───────────────────────────────────────────────────────────
     p.add_argument("--diversity_w",     type=float, default=0.5,
@@ -340,14 +386,7 @@ def _backtest_full(
 ) -> tuple[float, float, pd.DataFrame | None, dict | None]:
     """
     完整回测，返回 (oos_sharpe, mean_abs_corr, results_df, perf)。
-
-    ★ 因子 ↔ PnL 一致性保证：
-      同样强制 top_n_features=0，与 _backtest_quick 保持完全一致。
-      这样保存到 JSON 的因子列表 = 模型实际使用的因子列表，
-      File 1（集成脚本）重跑时可精确复现。
-
-      若需要使用 top_n_features > 0，请在集成阶段（main_ensamble_mix.py）
-      单独设置，而非在因子搜索阶段使用。
+    同样强制 top_n_features=0，与 _backtest_quick 保持完全一致。
     """
     avail = [c for c in factor_subset if c in base_fd.columns]
     if not avail:
@@ -357,8 +396,6 @@ def _backtest_full(
     ta  = copy.copy(args)
     ta.contract_switch_dates = getattr(args, "contract_switch_dates", [])
 
-    # ★ 与 _backtest_quick 保持一致：强制关闭 XGB 内部特征过滤
-    #   确保 factor_subset（将被保存到 JSON）= 模型实际使用的特征集
     if getattr(ta, "model", "xgb") == "xgb":
         ta.top_n_features = 0
 
@@ -396,7 +433,7 @@ def _wls_oos_sharpe(
         return -999.0
     ta = copy.copy(args)
     ta.contract_switch_dates = getattr(args, "contract_switch_dates", [])
-    ta.model = "wls"  # 强制 WLS
+    ta.model = "wls"
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         res, perf = run_backtest_reg(base_fd[avail].copy(), price_data, ta)
@@ -418,14 +455,6 @@ def stage0_auto_must_include(
 ) -> list[str]:
     """
     自动挑选 MUST_INCLUDE 因子（WLS 快筛）。
-
-    流程
-    ----
-    1. 计算所有因子 IC-IR，加噪声后取 top-K
-    2. 单因子 WLS 回测 → top 10（按 OOS Sharpe）
-    3. top10 两两组合 → WLS 回测 → top 10 二因子组合
-    4. top10 二因子 + 第三因子 → WLS 回测 → top 10 三因子组合
-    5. 汇总 30 组，按 OOS Sharpe 取最优 1 组作为 MUST_INCLUDE
     """
     from itertools import combinations
 
@@ -449,7 +478,6 @@ def stage0_auto_must_include(
         raw_ic = _rolling_ic(select_fd[col], labels, ic_window)
         ic_ir_map[col] = _ic_ir(raw_ic)
 
-    # 加噪声引入不确定性
     if noise_amp > 0:
         noise_std = noise_amp * np.std(list(ic_ir_map.values()))
         noisy = {c: v + rng.normal(0, noise_std) for c, v in ic_ir_map.items()}
@@ -510,7 +538,6 @@ def stage0_auto_must_include(
     all_candidates = top10_single + top10_pair + top10_triple
     all_candidates.sort(key=lambda x: x[0], reverse=True)
 
-    # 保存完整记录
     s0_rows = []
     for oos_s, fs in all_candidates:
         s0_rows.append({
@@ -528,6 +555,310 @@ def stage0_auto_must_include(
         print(f"    {f}")
 
     return best_factors
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 族内分层 ICIR 加权合成（替代 PCA）
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _compute_icir_in_window(
+    factor_values: np.ndarray,   # shape (window_size,)
+    label_values:  np.ndarray,   # shape (window_size,)
+) -> float:
+    """
+    在给定窗口内计算单因子的 IC-IR。
+    IC = rank correlation between factor and label (逐 bar 滚动 rank 再相关)。
+    这里简化为窗口内整体 rank correlation 的稳定性估计：
+      将窗口切成 N 个子段（每段约 100 bar），每段算一个 rank IC，
+      然后 ICIR = mean(ICs) / std(ICs)。
+
+    这比逐 bar 滚动 IC 更稳定、计算更快。
+    """
+    from scipy.stats import spearmanr
+
+    # 去 NaN
+    valid = ~(np.isnan(factor_values) | np.isnan(label_values))
+    fv = factor_values[valid]
+    lv = label_values[valid]
+
+    if len(fv) < 200:
+        # 数据太少，直接算一个整体 rank IC，ICIR 设为 |IC| * sqrt(N/100)
+        if len(fv) < 30:
+            return 0.0
+        corr, _ = spearmanr(fv, lv)
+        if np.isnan(corr):
+            return 0.0
+        # 粗略调整：假设 IC 序列长度 = len(fv)/100
+        pseudo_n = max(1, len(fv) // 100)
+        return abs(corr) * np.sqrt(pseudo_n)
+
+    # 切子段算多个 IC
+    seg_size = 100
+    n_segs   = len(fv) // seg_size
+    if n_segs < 3:
+        seg_size = len(fv) // 3
+        n_segs   = 3
+
+    ics = []
+    for s in range(n_segs):
+        start = s * seg_size
+        end   = start + seg_size
+        if end > len(fv):
+            break
+        seg_f = fv[start:end]
+        seg_l = lv[start:end]
+        corr, _ = spearmanr(seg_f, seg_l)
+        if not np.isnan(corr):
+            ics.append(corr)
+
+    if len(ics) < 3:
+        return 0.0
+
+    ic_mean = np.mean(ics)
+    ic_std  = np.std(ics, ddof=1)
+    if ic_std < 1e-9:
+        return abs(ic_mean) * 10.0  # 完美稳定，给高分
+
+    return abs(ic_mean) / ic_std
+
+
+def apply_factor_icir_groups(
+    fd:            pd.DataFrame,
+    price_data:    pd.Series,
+    icir_groups:   dict[str, dict],
+    icir_window:   int,
+    retrain_freq:  int,
+    fwd:           int,
+    check_days:    int,
+    multiplier:    float,
+    out_dir:       Path | None = None,
+    default_icir_min: float = 0.3,
+) -> tuple[pd.DataFrame, list[str]]:
+    """
+    对 FACTOR_ICIR_GROUPS 中的每组因子做分层 ICIR 加权合成。
+
+    参数
+    ----
+    fd             : 因子 DataFrame（行=时间，列=因子）
+    price_data     : 价格序列（用于计算 label → IC）
+    icir_groups    : {新列名: {"sub_clusters": {...}, "icir_min": float}}
+    icir_window    : ICIR 计算滚动窗口（bar 数）
+    retrain_freq   : 权重更新频率（每 N 个 bar 重新计算 ICIR）
+    fwd            : 前瞻 bar 数（用于计算 label）
+    check_days     : label 计算参数
+    multiplier     : label 计算参数
+    out_dir        : 若不为 None，保存权重历史记录
+    default_icir_min : 默认 ICIR 剔除阈值
+
+    返回
+    ----
+    fd_new       : 注入了合成列、删除了原始族列的新 DataFrame
+    removed_cols : 被删除的原始列名列表
+
+    设计要点
+    --------
+    · 分层合成：子簇内 ICIR 加权 → 子簇间 ICIR 加权
+    · 权重跟随 retrain_freq 更新：在每个 retrain 节点重新计算 ICIR，
+      中间 retrain_freq 个 bar 使用固定权重
+    · 动态剔除：ICIR < icir_min 的因子权重置零
+    · 无前视偏差：时间 t 的权重只用 [t-icir_window, t) 的数据
+    """
+    # 计算 label（与回测完全一致的 reversal label）
+    labels = _compute_reversal_labels(
+        price_data, fwd=fwd,
+        check_days=check_days,
+        multiplier=multiplier,
+    )
+    label_values_full = labels.reindex(fd.index).values.astype(float)
+
+    fd_new       = fd.copy()
+    removed_cols: list[str] = []
+
+    for comp_name, group_cfg in icir_groups.items():
+        sub_clusters = group_cfg["sub_clusters"]
+        icir_min     = group_cfg.get("icir_min", default_icir_min)
+
+        # 收集所有有效的原始因子
+        all_raw_cols: list[str] = []
+        valid_sub_clusters: dict[str, list[str]] = {}
+        for sc_name, sc_cols in sub_clusters.items():
+            avail = [c for c in sc_cols if c in fd.columns]
+            if avail:
+                valid_sub_clusters[sc_name] = avail
+                all_raw_cols.extend(avail)
+            else:
+                print(f"  [ICIR] {comp_name}/{sc_name}: 所有列不存在，跳过")
+
+        if not all_raw_cols:
+            print(f"  [ICIR] {comp_name}: 无有效因子，跳过")
+            continue
+
+        if len(all_raw_cols) == 1:
+            print(f"  [ICIR] {comp_name}: 仅 1 个有效因子，直接复制 {all_raw_cols[0]}")
+            fd_new[comp_name] = fd[all_raw_cols[0]].values
+            removed_cols.extend(all_raw_cols)
+            fd_new.drop(columns=all_raw_cols, inplace=True, errors="ignore")
+            continue
+
+        n = len(fd)
+        composite = np.full(n, np.nan)
+
+        # 提取原始因子矩阵
+        raw_data = {col: fd[col].values.astype(float) for col in all_raw_cols}
+
+        # ── 确定 retrain 节点 ────────────────────────────────────────────
+        # 第一个可用时间点 = icir_window（需要足够历史数据）
+        first_valid = icir_window
+        retrain_points = list(range(first_valid, n, retrain_freq))
+        if not retrain_points:
+            retrain_points = [first_valid]
+
+        # 权重记录（用于保存和诊断）
+        weight_history: list[dict] = []
+
+        # ── 当前权重缓存 ────────────────────────────────────────────────
+        # sub_weights[sc_name] = {col: weight}  子簇内权重
+        # inter_weights[sc_name] = weight       子簇间权重
+        sub_weights:   dict[str, dict[str, float]] = {}
+        inter_weights: dict[str, float] = {}
+
+        current_retrain_idx = 0  # 下一个 retrain 点的索引
+
+        for t in range(first_valid, n):
+            # ── 是否需要更新权重 ─────────────────────────────────────────
+            need_update = False
+            if current_retrain_idx < len(retrain_points):
+                if t >= retrain_points[current_retrain_idx]:
+                    need_update = True
+                    # 推进到下一个 retrain 节点
+                    while (current_retrain_idx < len(retrain_points)
+                           and retrain_points[current_retrain_idx] <= t):
+                        current_retrain_idx += 1
+
+            if need_update or not sub_weights:
+                # ── 第一层：子簇内 ICIR 加权 ─────────────────────────────
+                win_start = max(0, t - icir_window)
+                win_label = label_values_full[win_start:t]
+
+                sub_icir_values: dict[str, float] = {}  # 子簇的合成 ICIR
+
+                for sc_name, sc_cols in valid_sub_clusters.items():
+                    col_icirs: dict[str, float] = {}
+                    for col in sc_cols:
+                        win_factor = raw_data[col][win_start:t]
+                        icir_val = _compute_icir_in_window(win_factor, win_label)
+                        col_icirs[col] = icir_val
+
+                    # 动态剔除：ICIR < icir_min 的置零
+                    filtered = {c: v for c, v in col_icirs.items() if v >= icir_min}
+
+                    if not filtered:
+                        # 全部被剔除，用最大的那个（保底）
+                        best_col = max(col_icirs, key=col_icirs.get)
+                        filtered = {best_col: col_icirs[best_col]}
+
+                    # 归一化权重
+                    total = sum(filtered.values())
+                    if total < 1e-9:
+                        # 等权
+                        w = {c: 1.0 / len(filtered) for c in filtered}
+                    else:
+                        w = {c: v / total for c, v in filtered.items()}
+
+                    # 未入选的因子权重为 0
+                    full_w = {c: 0.0 for c in sc_cols}
+                    full_w.update(w)
+                    sub_weights[sc_name] = full_w
+
+                    # 子簇的 ICIR = 加权合成因子的 ICIR（用加权后的值重新算）
+                    # 简化：用子簇内各因子 ICIR 的加权均值作为子簇 ICIR
+                    sc_icir = sum(v * col_icirs.get(c, 0.0)
+                                  for c, v in w.items())
+                    sub_icir_values[sc_name] = sc_icir
+
+                # ── 第二层：子簇间 ICIR 加权 ─────────────────────────────
+                total_inter = sum(sub_icir_values.values())
+                if total_inter < 1e-9:
+                    inter_weights = {sc: 1.0 / len(sub_icir_values)
+                                     for sc in sub_icir_values}
+                else:
+                    inter_weights = {sc: v / total_inter
+                                     for sc, v in sub_icir_values.items()}
+
+                # 记录权重
+                record = {"bar_idx": t, "time": fd.index[t]}
+                for sc_name in valid_sub_clusters:
+                    iw = inter_weights.get(sc_name, 0.0)
+                    record[f"inter_{sc_name}"] = round(iw, 4)
+                    for col, w in sub_weights.get(sc_name, {}).items():
+                        short_col = col.replace("x_ma_ret_", "")
+                        record[f"w_{sc_name}_{short_col}"] = round(w * iw, 4)
+                        record[f"icir_{short_col}"] = round(
+                            _compute_icir_in_window(
+                                raw_data[col][win_start:t], win_label
+                            ), 4
+                        ) if need_update else ""
+                weight_history.append(record)
+
+            # ── 用当前权重合成 ───────────────────────────────────────────
+            val = 0.0
+            any_valid = False
+            for sc_name, sc_cols in valid_sub_clusters.items():
+                iw = inter_weights.get(sc_name, 0.0)
+                if iw < 1e-9:
+                    continue
+                sw = sub_weights.get(sc_name, {})
+                for col in sc_cols:
+                    w = sw.get(col, 0.0)
+                    if w < 1e-9:
+                        continue
+                    fv = raw_data[col][t]
+                    if np.isnan(fv):
+                        continue
+                    val += iw * w * fv
+                    any_valid = True
+
+            if any_valid:
+                composite[t] = val
+
+        fd_new[comp_name] = composite
+
+        # 统计信息
+        n_valid = int(np.sum(~np.isnan(composite)))
+        print(f"  [ICIR] {comp_name}: {len(all_raw_cols)} 个因子 → 分层 ICIR 加权合成"
+              f"  有效 bar={n_valid}/{n}"
+              f"  子簇={list(valid_sub_clusters.keys())}"
+              f"  icir_min={icir_min}"
+              f"  更新频率=每 {retrain_freq} bar")
+
+        # 打印最新一次权重
+        if weight_history:
+            latest = weight_history[-1]
+            print(f"  [ICIR] 最新权重（bar {latest['bar_idx']}）：")
+            for sc_name in valid_sub_clusters:
+                iw = latest.get(f"inter_{sc_name}", 0.0)
+                col_details = []
+                for col in valid_sub_clusters[sc_name]:
+                    short = col.replace("x_ma_ret_", "")
+                    final_w = latest.get(f"w_{sc_name}_{short}", 0.0)
+                    col_details.append(f"{short}={final_w:.3f}")
+                print(f"    {sc_name}（簇间权重={iw:.3f}）：{', '.join(col_details)}")
+
+        # 保存权重历史
+        if out_dir is not None and weight_history:
+            wh_df = pd.DataFrame(weight_history)
+            wh_df.to_csv(
+                out_dir / f"icir_weights_{comp_name}.csv",
+                index=False, encoding="utf-8-sig",
+            )
+            print(f"  [ICIR] 权重历史已保存 → icir_weights_{comp_name}.csv"
+                  f"（{len(weight_history)} 条记录）")
+
+        # 删除原始族列
+        removed_cols.extend(all_raw_cols)
+        fd_new.drop(columns=all_raw_cols, inplace=True, errors="ignore")
+
+    return fd_new, removed_cols
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -753,8 +1084,6 @@ def stage3_refine_pool(
 ) -> list[dict]:
     """
     对候选池（取前 POOL_SIZE 个）逐一精修。
-    精修和最终完整回测均使用 top_n_features=0（由 _backtest_quick /
-    _backtest_full 内部保证），确保因子列表 ↔ PnL 曲线严格对应。
     """
     cw = args.corr_penalty_w
     mi = getattr(args, "_must_include", MUST_INCLUDE)
@@ -767,7 +1096,7 @@ def stage3_refine_pool(
 
     for i, rec in enumerate(pool[:limit]):
         init_factors = rec["all_factors"].split("|")
-        opt_short = [f.replace("x_","")[:18] for f in init_factors if f not in MUST_INCLUDE]
+        opt_short = [f.replace("x_","")[:18] for f in init_factors if f not in mi]
 
         current    = list(init_factors)
         oos_s, mac = _backtest_quick(current, base_fd, price_data, args)
@@ -776,10 +1105,9 @@ def stage3_refine_pool(
         for it in range(args.refine_iters):
             best_delta = 0.0
             best_move  = None
-            optional_cur = [f for f in current if f not in MUST_INCLUDE]
+            optional_cur = [f for f in current if f not in mi]
             covered = set(optional_cur)
 
-            # (a)(b) swap / remove
             for f_old in optional_cur:
                 cl = factor_to_cluster.get(f_old, [f_old])
                 for f_new in [f for f in cl if f != f_old] + [None]:
@@ -792,7 +1120,6 @@ def stage3_refine_pool(
                         best_delta = s_score - cur_score
                         best_move  = (trial, s_score, s_oos)
 
-            # (c) add：为未选的簇加入 top-1
             for cl in cluster_candidates:
                 if not any(f in covered for f in cl):
                     trial = current + [cl[0]]
@@ -806,18 +1133,18 @@ def stage3_refine_pool(
                 break
             current, cur_score, oos_s = best_move
 
-        # ★ 精修完成后跑完整回测并缓存（top_n_features=0，由 _backtest_full 保证）
+        # ★ 精修完成后跑完整回测并缓存
         full_oos, full_mac, res_df, perf = _backtest_full(
             current, base_fd, price_data, args
         )
         final_score = _score(full_oos, full_mac, cw)
-        final_opt   = [f.replace("x_","")[:18] for f in current if f not in MUST_INCLUDE]
+        final_opt   = [f.replace("x_","")[:18] for f in current if f not in mi]
         print(f"  [{i+1:2d}/{limit}]  {opt_short} -> {final_opt}"
               f"  Score={final_score:+.4f}  OOS={full_oos:+.4f}")
 
         refined.append({
             "all_factors": "|".join(current),
-            "optional":    "|".join(f for f in current if f not in MUST_INCLUDE),
+            "optional":    "|".join(f for f in current if f not in mi),
             "oos_sharpe":  full_oos,
             "mean_abs_corr": full_mac,
             "score":       final_score,
@@ -954,6 +1281,8 @@ def main():
     else:
         print(f"  WLS: weight_method={args.weight_method}")
     print(f"  训练标签: check_days={args.check_days}  multiplier={args.multiplier}")
+    print(f"  ICIR 加权: icir_window={args.icir_window}  icir_min={args.icir_min}"
+          f"  更新频率=retrain_freq={args.retrain_freq}")
     print(f"  Stage2: {args.n_trials} trials  penalty={args.corr_penalty_w}"
           f"  候选池={POOL_SIZE}")
     print(f"  Stage3: refine_iters={args.refine_iters}")
@@ -973,7 +1302,11 @@ def main():
         args.contract_switch_dates = []
 
     all_x_cols = sorted([c for c in df.columns if c.startswith("x_")])
-    missing    = [c for c in MUST_INCLUDE if c not in all_x_cols]
+
+    # ICIR 合成会生成新列名（如 x_ma_ret_icir），需要排除在"缺失检查"之外
+    icir_generated = set(FACTOR_ICIR_GROUPS.keys()) if FACTOR_ICIR_GROUPS else set()
+    missing = [c for c in MUST_INCLUDE
+               if c not in all_x_cols and c not in icir_generated]
     if missing:
         print(f"[错误] 必选因子不在数据中: {missing}"); return
 
@@ -1009,6 +1342,65 @@ def main():
           f"{base_fd.index[0]} ~ {base_fd.index[-1]}\n")
 
     # ══════════════════════════════════════════════════════════════════════
+    # 族内分层 ICIR 加权合成（替代 PCA）
+    # ══════════════════════════════════════════════════════════════════════
+    if FACTOR_ICIR_GROUPS:
+        print(f"{SEP}\n  族内分层 ICIR 加权合成\n{SEP}")
+        print(f"  合成组数：{len(FACTOR_ICIR_GROUPS)}")
+        for comp_name, group_cfg in FACTOR_ICIR_GROUPS.items():
+            subs = group_cfg["sub_clusters"]
+            icir_min = group_cfg.get("icir_min", args.icir_min)
+            print(f"  {comp_name}  (icir_min={icir_min})")
+            for sc_name, sc_cols in subs.items():
+                print(f"    {sc_name}: {sc_cols}")
+        print()
+
+        # select_fd（lag=1，用于 Stage 1 聚类）
+        select_fd, removed_select = apply_factor_icir_groups(
+            fd=select_fd,
+            price_data=select_price,
+            icir_groups=FACTOR_ICIR_GROUPS,
+            icir_window=args.icir_window,
+            retrain_freq=args.retrain_freq,
+            fwd=args.fwd,
+            check_days=args.check_days,
+            multiplier=args.multiplier,
+            out_dir=out,
+            default_icir_min=args.icir_min,
+        )
+
+        # base_fd（lag=args.lag，用于 Stage 2/3/4 回测）
+        base_fd, removed_base = apply_factor_icir_groups(
+            fd=base_fd,
+            price_data=price_data,
+            icir_groups=FACTOR_ICIR_GROUPS,
+            icir_window=args.icir_window,
+            retrain_freq=args.retrain_freq,
+            fwd=args.fwd,
+            check_days=args.check_days,
+            multiplier=args.multiplier,
+            out_dir=None,   # 只保存一次权重记录（select_fd 已保存）
+            default_icir_min=args.icir_min,
+        )
+
+        # 同步更新 all_x_cols
+        removed_set = set(removed_select) | set(removed_base)
+        all_x_cols  = [c for c in all_x_cols if c not in removed_set]
+        for comp_name in FACTOR_ICIR_GROUPS:
+            if comp_name not in all_x_cols:
+                all_x_cols.append(comp_name)
+
+        # 验证 MUST_INCLUDE 中所有因子均已存在
+        missing_must = [c for c in MUST_INCLUDE
+                        if c not in select_fd.columns and c not in base_fd.columns]
+        if missing_must:
+            print(f"[错误] ICIR 合成后 MUST_INCLUDE 中仍有列缺失: {missing_must}")
+            return
+
+        print(f"\n  合成完成：删除原始列 {len(removed_set)} 个，"
+              f"新增 ICIR 合成列 {len(FACTOR_ICIR_GROUPS)} 个\n")
+
+    # ══════════════════════════════════════════════════════════════════════
     # Stage 1 — 残差 IC + Ward 聚类（用 lag=1 的原始因子）
     # ══════════════════════════════════════════════════════════════════════
     print(f"{SEP}\n  Stage 1 / 4  ─  残差 IC + Ward 聚类"
@@ -1020,7 +1412,7 @@ def main():
     cluster_info_df.to_csv(out / "stage1_clusters.csv", index=False, encoding="utf-8-sig")
 
     # ══════════════════════════════════════════════════════════════════════
-    # Stage 2 — 跨簇 Optuna，收集候选池（用 lag={args.lag} 的回测数据）
+    # Stage 2 — 跨簇 Optuna，收集候选池
     # ══════════════════════════════════════════════════════════════════════
     print(f"\n{SEP}\n  Stage 2 / 4  ─  跨簇 Optuna（收集候选池 top-{POOL_SIZE}）\n{SEP}")
     pool = stage2_collect_pool(cluster_candidates, base_fd, price_data, args, out)
@@ -1090,16 +1482,25 @@ def main():
                 print_performance_table(res_df2, fa)
                 save_results(fa, avail, fa.output_dir, perf2, res_df2)
 
-        # ★ 保存所有影响复现的参数（含 check_days / multiplier 等）
+        # ★ 保存所有影响复现的参数
         result_json.append({
             "rank":          i + 1,
             "model":         args.model,
             # ── 因子 ──────────────────────────────────────────────────
             "factors":       factors,
-            "factor_cols":   factors,      # 与 File1 _load_combo_config 字段名对齐
+            "factor_cols":   factors,
             "must_include":  MUST_INCLUDE,
             "optional":      optional,
-            # ── 训练标签（★ 关键，之前未保存）──────────────────────────
+            # ── ICIR 合成配置（★ 新增，用于复现）─────────────────────
+            "icir_groups":   {
+                name: {
+                    "sub_clusters": cfg["sub_clusters"],
+                    "icir_min": cfg.get("icir_min", args.icir_min),
+                }
+                for name, cfg in FACTOR_ICIR_GROUPS.items()
+            } if FACTOR_ICIR_GROUPS else {},
+            "icir_window":   args.icir_window,
+            # ── 训练标签 ──────────────────────────────────────────────
             "check_days":    args.check_days,
             "multiplier":    args.multiplier,
             # ── 特征工程 ──────────────────────────────────────────────
@@ -1135,7 +1536,6 @@ def main():
                 "min_child_weight": args.min_child_weight,
                 "reg_alpha":        args.reg_alpha,
                 "reg_lambda":       args.reg_lambda,
-                # ★ 搜索/保存阶段固定 0；集成阶段如需 top_n 可另行设置
                 "top_n_features":   0,
             } if args.model == "xgb" else {},
         })
@@ -1162,6 +1562,7 @@ def main():
     print(f"  top5_combinations.json  ·  top5_signal_corr.csv")
     print(f"  stage1_ranking.csv  ·  stage1_clusters.csv")
     print(f"  stage2_all_trials.csv  ·  optuna_study.pkl")
+    print(f"  icir_weights_*.csv（ICIR 权重变化历史）")
     print(f"  backtest_combo_1/ ~ backtest_combo_{len(top5)}/")
     print(SEP)
 

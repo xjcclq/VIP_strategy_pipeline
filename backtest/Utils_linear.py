@@ -16,7 +16,8 @@ from tqdm import tqdm
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import ElasticNet, Lasso, LinearRegression, Ridge
+from sklearn.cross_decomposition import PLSRegression
 from sklearn.preprocessing import RobustScaler
 
 import numpy as np
@@ -316,11 +317,7 @@ def load_palm_oil_data(data_file) -> pd.DataFrame:
             df.set_index("date", inplace=True)
             break
     df.index = pd.to_datetime(df.index)
-    # 清理 Excel 公式残留（如 #NAME?）
-    x_cols = [c for c in df.columns if c.startswith("x_")]
-    for c in x_cols:
-        if df[c].dtype == object:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
+    # print(f"数据加载: {df.shape}  {df.index[0]} ~ {df.index[-1]}")
     return df
 
 
@@ -345,48 +342,48 @@ def prepare_factor_data(
     """
 
     # ── 0. 注入会话特征 ────────────────────────────────────────────────────
-    # if add_session_features:
-    #     df = df.copy()
-    #     idx      = pd.to_datetime(df.index)
-    #     has_time = (idx.hour != 0).any() or (idx.minute != 0).any()
-    #
-    #     if has_time:
-    #         hm = idx.hour * 60 + idx.minute          # 距午夜分钟数
-    #
-    #         # ── 夜盘哑变量 ────────────────────────────────────────────────
-    #         # 21:00(1260) ≤ hm < 23:00(1380)
-    #         is_night = ((hm >= 1260) & (hm < 1380)).astype(float)
-    #
-    #         # ── 盘内归一化进度 [0, 1] ─────────────────────────────────────
-    #         # 白盘：09:00(540)–15:00(900)，午休(690–810)视为连续拉伸
-    #         #        progress = (hm - 540) / 360
-    #         # 夜盘：21:00(1260)–23:00(1380)
-    #         #        progress = (hm - 1260) / 120
-    #         # 其余时段（数据极罕见，如结算时间）默认 0.5
-    #         progress = pd.Series(0.5, index=idx, dtype=float)
-    #
-    #         day_mask   = (hm >= 540)  & (hm < 900)
-    #         night_mask = (hm >= 1260) & (hm < 1380)
-    #
-    #         progress[day_mask]   = (hm[day_mask]   - 540)  / 360.0
-    #         progress[night_mask] = (hm[night_mask]  - 1260) / 120.0
-    #         progress = progress.clip(0.0, 1.0)
-    #
-    #         # sin(π·p)：盘初≈0 → 盘中≈1 → 盘尾≈0，天然捕捉开/收盘对称效应
-    #         session_sin = np.sin(np.pi * progress)
-    #
-    #         df["x_is_night"]    = is_night
-    #         df["x_session_sin"] = session_sin.values if hasattr(session_sin, 'values') else session_sin
-    #
-    #         night_cnt = int(np.sum(is_night > 0))
-    #         day_cnt   = len(is_night) - night_cnt
-    #         print(f"[会话特征] 白盘={day_cnt} bars  夜盘={night_cnt} bars  "
-    #               f"sin均值={session_sin.mean():.3f}")
-    #     else:
-    #         # 日线数据：填 0，不引入噪声
-    #         df["x_is_night"]    = 0.0
-    #         df["x_session_sin"] = 0.0
-    #         print("[会话特征] 日线数据，x_is_night/x_session_sin 均填 0")
+    if add_session_features:
+        df = df.copy()
+        idx      = pd.to_datetime(df.index)
+        has_time = (idx.hour != 0).any() or (idx.minute != 0).any()
+
+        if has_time:
+            hm = idx.hour * 60 + idx.minute          # 距午夜分钟数
+
+            # ── 夜盘哑变量 ────────────────────────────────────────────────
+            # 21:00(1260) ≤ hm < 23:00(1380)
+            is_night = ((hm >= 1260) & (hm < 1380)).astype(float)
+
+            # ── 盘内归一化进度 [0, 1] ─────────────────────────────────────
+            # 白盘：09:00(540)–15:00(900)，午休(690–810)视为连续拉伸
+            #        progress = (hm - 540) / 360
+            # 夜盘：21:00(1260)–23:00(1380)
+            #        progress = (hm - 1260) / 120
+            # 其余时段（数据极罕见，如结算时间）默认 0.5
+            progress = pd.Series(0.5, index=idx, dtype=float)
+
+            day_mask   = (hm >= 540)  & (hm < 900)
+            night_mask = (hm >= 1260) & (hm < 1380)
+
+            progress[day_mask]   = (hm[day_mask]   - 540)  / 360.0
+            progress[night_mask] = (hm[night_mask]  - 1260) / 120.0
+            progress = progress.clip(0.0, 1.0)
+
+            # sin(π·p)：盘初≈0 → 盘中≈1 → 盘尾≈0，天然捕捉开/收盘对称效应
+            session_sin = np.sin(np.pi * progress)
+
+            df["x_is_night"]    = is_night
+            df["x_session_sin"] = session_sin.values if hasattr(session_sin, 'values') else session_sin
+
+            night_cnt = int(np.sum(is_night > 0))
+            day_cnt   = len(is_night) - night_cnt
+            print(f"[会话特征] 白盘={day_cnt} bars  夜盘={night_cnt} bars  "
+                  f"sin均值={session_sin.mean():.3f}")
+        else:
+            # 日线数据：填 0，不引入噪声
+            df["x_is_night"]    = 0.0
+            df["x_session_sin"] = 0.0
+            print("[会话特征] 日线数据，x_is_night/x_session_sin 均填 0")
 
     # ── 1. 以下与原版完全一致 ──────────────────────────────────────────────
     price_cols = [c for c in df.columns if c.lower().startswith("y_")]
@@ -406,17 +403,10 @@ def prepare_factor_data(
         factor_cols = avail
 
     # 直接用 y_open shift(-1) 作为价格列：pd_[t] = open[t+1]，与 t 时刻因子对齐
-    # open_col = next((c for c in price_cols if c.lower() == "y_open"), None)
-    # price_col = open_col or price_cols[0]
-    # pd_ = df[price_col].shift(-1)          # t 行存的是 t+1 的 open
-    # fd = df[factor_cols].copy()
-
-    # 用close 来预测
-    open_col = next((c for c in price_cols if c.lower() == "y_close"), None)
+    open_col = next((c for c in price_cols if c.lower() == "y_open"), None)
     price_col = open_col or price_cols[0]
-    pd_ = df[price_col].shift(0)          # t 行存的是 t+1 的 open
+    pd_ = df[price_col].shift(-1)
     fd = df[factor_cols].copy()
-
 
     # 滞后特征
     if factor_lags and len(factor_lags) == len(factor_cols):
@@ -439,11 +429,6 @@ def prepare_factor_data(
         fd, pd_ = fd.loc[start_date:], pd_.loc[start_date:]
 
     fd = fd.replace([np.inf, -np.inf], np.nan).ffill().bfill()
-    all_nan_cols = fd.columns[fd.isna().all()].tolist()
-    if all_nan_cols:
-        logging.warning(f"丢弃全NaN因子列({len(all_nan_cols)}): {all_nan_cols}")
-        fd = fd.drop(columns=all_nan_cols)
-        factor_cols = [c for c in factor_cols if c not in set(all_nan_cols)]
     valid = ~(fd.isna().any(axis=1) | fd.isin([np.inf, -np.inf]).any(axis=1) | pd_.isna())
 
     return fd[valid], pd_[valid].copy(), factor_cols
@@ -454,9 +439,8 @@ def prepare_factor_data(
 def _compute_reversal_labels(price_data: pd.Series, fwd: int,
                               check_days: int = 0, multiplier: float = 1.2) -> pd.Series:
     """
-    向量化反转标签：fwd期收益率，若后续出现更强反转则替换。
-    price_data[t] 已经是 open[t+1]（prepare_factor_data 里 shift 过了）。
-    label[t] = (price_data[t+fwd] - price_data[t]) / price_data[t]
+    向量化反转标签：fwd天收益率，若后续出现更强反转则替换。
+    过滤"假突破"，让模型学习持续性方向。
     """
     base = (price_data.shift(-fwd) - price_data) / price_data
     labels = base.copy()
@@ -636,6 +620,113 @@ def _train_wls(X_train: pd.DataFrame, y_train: pd.Series,
     )
     model.fit(X, y_train.values)
     return model, scaler
+
+
+def _train_regularized_linear(
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    model_type: str,
+    use_scaler: bool = True,
+    alpha: float = 0.5,
+    l1_ratio: float = 0.5,
+    max_iter: int = 10000,
+):
+    scaler = None
+    X = X_train.values
+    if use_scaler:
+        scaler = RobustScaler(quantile_range=(10.0, 90.0))
+        X = scaler.fit_transform(X)
+
+    if model_type == "lasso":
+        model = Lasso(alpha=alpha, max_iter=max_iter)
+    elif model_type == "ridge":
+        model = Ridge(alpha=alpha)
+    elif model_type in {"elastic_net", "elasticnet"}:
+        model = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, max_iter=max_iter)
+    else:
+        raise ValueError(f"Unsupported linear model type: {model_type}")
+
+    model.fit(X, y_train.values)
+    return model, scaler
+
+
+def _train_pls(
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    use_scaler: bool = True,
+    n_components: int = 2,
+    max_iter: int = 500,
+):
+    """训练 PLS 回归，返回 (model, scaler)。"""
+    scaler = None
+    X = X_train.values
+    if use_scaler:
+        scaler = RobustScaler(quantile_range=(10.0, 90.0))
+        X = scaler.fit_transform(X)
+    n_components = min(n_components, X.shape[1], X.shape[0])
+    model = PLSRegression(n_components=n_components, max_iter=max_iter)
+    model.fit(X, y_train.values)
+    return model, scaler
+
+
+def _train_linear_model(X_train: pd.DataFrame, y_train: pd.Series, args):
+    use_scaler = getattr(args, "use_scaler", True)
+    model_type = str(getattr(args, "model_type", "wls") or "wls").lower()
+
+    if model_type == "wls":
+        wm = getattr(args, "weight_method", "park")
+        rw = getattr(args, "rolling_window", 60)
+        hl = getattr(args, "ewma_halflife", 21)
+        return _train_wls(
+            X_train,
+            y_train,
+            use_scaler,
+            weight_method=wm,
+            rolling_window=rw,
+            ewma_halflife=hl,
+        )
+
+    if model_type == "lasso":
+        return _train_regularized_linear(
+            X_train,
+            y_train,
+            model_type="lasso",
+            use_scaler=use_scaler,
+            alpha=float(getattr(args, "lasso_alpha", 1.0)),
+            max_iter=int(getattr(args, "linear_max_iter", 10000)),
+        )
+
+    if model_type == "ridge":
+        return _train_regularized_linear(
+            X_train,
+            y_train,
+            model_type="ridge",
+            use_scaler=use_scaler,
+            alpha=float(getattr(args, "ridge_alpha", 1.0)),
+            max_iter=int(getattr(args, "linear_max_iter", 10000)),
+        )
+
+    if model_type in {"elastic_net", "elasticnet"}:
+        return _train_regularized_linear(
+            X_train,
+            y_train,
+            model_type="elastic_net",
+            use_scaler=use_scaler,
+            alpha=float(getattr(args, "elastic_net_alpha", 1.0)),
+            l1_ratio=float(getattr(args, "elastic_net_l1_ratio", 0.5)),
+            max_iter=int(getattr(args, "linear_max_iter", 10000)),
+        )
+
+    if model_type == "pls":
+        return _train_pls(
+            X_train,
+            y_train,
+            use_scaler=use_scaler,
+            n_components=int(getattr(args, "pls_n_components", 2)),
+            max_iter=int(getattr(args, "linear_max_iter", 500)),
+        )
+
+    raise ValueError(f"Unsupported model_type: {model_type}")
 
 
 # ── 回测核心 ──────────────────────────────────────────────────────────────────
@@ -837,8 +928,7 @@ def _performance(results_df: pd.DataFrame, args) -> dict:
 
     active = valid[valid["has_pos"]]["strategy_return"].values
     pos_r, neg_r = active[active > 0], active[active < 0]
-    # wr  = len(pos_r) / len(active) if len(active) else 0
-    wr = len(pos_r) / (len(pos_r) + len(neg_r) )
+    wr  = len(pos_r) / len(active) if len(active) else 0
     plr = pos_r.mean() / abs(neg_r.mean()) if len(pos_r) and len(neg_r) else 0
     # print(f"  [Perf] 胜率={wr:.2%} 盈利{len(pos_r)}日/有仓{len(active)}日")
 
@@ -912,10 +1002,7 @@ def _run_sliding_window_backtest(factor_data: pd.DataFrame,
         # print(f"  [{rp}/{n}] {mode}[{train_start}:{train_end}] n={valid.sum()}")
 
         # 全量训练
-        wm  = getattr(args, "weight_method",  "park")
-        rw  = getattr(args, "rolling_window", 60)
-        hl  = getattr(args, "ewma_halflife",  21)
-        model, scaler = _train_wls(Xv, yv, use_sc, weight_method=wm, rolling_window=rw, ewma_halflife=hl)
+        model, scaler = _train_linear_model(Xv, yv, args)
         if first_model is None:
             first_model, first_sc = model, scaler
 
@@ -927,7 +1014,7 @@ def _run_sliding_window_backtest(factor_data: pd.DataFrame,
                 try:
                     Xin_v = Xin[vin].values
                     Xs    = first_sc.transform(Xin_v) if first_sc else Xin_v
-                    predictions[:tw][vin] = first_model.predict(Xs)
+                    predictions[:tw][vin] = np.asarray(first_model.predict(Xs)).ravel()
                 except Exception:
                     pass
             in_sample_done = True
@@ -939,7 +1026,7 @@ def _run_sliding_window_backtest(factor_data: pd.DataFrame,
             try:
                 Xb = factor_data.iloc[rp:pred_end][vp_mask].values
                 Xs = scaler.transform(Xb) if scaler else Xb
-                predictions[rp:pred_end][vp_mask] = model.predict(Xs)
+                predictions[rp:pred_end][vp_mask] = np.asarray(model.predict(Xs)).ravel()
             except Exception:
                 pass
 
@@ -1025,13 +1112,7 @@ def print_performance_table(results_df: pd.DataFrame, args):
 
 def save_results(args, factor_cols, output_dir, performance, results_df):
     os.makedirs(output_dir, exist_ok=True)
-    df_save = results_df.copy()
-    idx = pd.to_datetime(df_save.index)
-    df_save.insert(0, "datetime", idx)
-    df_save.insert(1, "date", idx.date)
-    df_save.insert(2, "time", idx.strftime("%H:%M"))
-    df_save.index.name = None
-    df_save.to_csv(os.path.join(output_dir, "results_df.csv"), index=False)
+    results_df.to_csv(os.path.join(output_dir, "results_df.csv"))
 
     with open(os.path.join(output_dir, "performance_summary.txt"), "w", encoding="utf-8") as f:
         f.write("棕榈油因子回测性能摘要\n" + "="*50 + "\n")
@@ -1204,187 +1285,6 @@ def _plot_results(results_df, performance, args, output_dir):
     if performance.get("split_point"):
         _plot_single(results_df, args, output_dir, "in")
         _plot_single(results_df, args, output_dir, "out")
-
-
-# ── 三段划分绘图（Train / Val / Test）─────────────────────────────────────────
-
-def _plot_single_3split(results_df, args, output_dir, val_split, test_split, mode="all"):
-    """
-    绘制带有两条分割线的回测图：
-      - 第一条虚线：Train/Val 分界（val_split）
-      - 第二条虚线：Val/Test 分界（test_split）
-
-    参数
-    ----
-    val_split  : str or pd.Timestamp, Train/Val 分界点
-    test_split : str or pd.Timestamp, Val/Test 分界点
-    mode       : "all" | "in" | "out"
-    """
-    fwd = getattr(args, "fwd", 1)
-
-    if mode == "in" and val_split:
-        df, sfx, ttl = results_df[results_df.index < val_split], "_in_sample", "（样本内 Train）"
-    elif mode == "out" and test_split and test_split in results_df.index:
-        si = results_df.index.get_loc(test_split)
-        if isinstance(si, slice):
-            si = si.stop - 1 if si.stop is not None else len(results_df) - 1
-        elif isinstance(si, np.ndarray):
-            si = int(np.flatnonzero(si)[-1])
-        df, sfx, ttl = results_df.iloc[si + fwd + 2:], "_out_of_sample", "（样本外 Test）"
-    else:
-        df, sfx, ttl = results_df, "", ""
-
-    if len(df) == 0:
-        return
-
-    # ── 日线聚合 ──
-    _key = pd.to_datetime(df.index).normalize()
-    d    = df.groupby(_key).agg(
-        r=("strategy_return", "sum"),
-        br=("actual_return",  "sum"),
-        sw=("is_switch",      "any"),
-        hp=("position",       lambda x: (x != 0).any()),
-    )
-    rv    = d[~d["sw"]]
-    r     = rv["r"].values
-    br    = rv["br"].values
-    n_days = len(r)
-    if n_days == 0:
-        return
-
-    cum_s = np.cumprod(1 + r)
-    cum_b = np.cumprod(1 + br)
-
-    # ── 指标（日线）──
-    mu, sigma = r.mean(), r.std()
-    ann  = mu * 252
-    vol  = sigma * np.sqrt(252)
-    sr   = mu / sigma * np.sqrt(252) if sigma > 0 else 0
-    cum_arr = 1.0 + np.cumsum(r)
-    peak    = np.maximum.accumulate(cum_arr)
-    mdd     = ((cum_arr - peak) / peak).min()
-    neg     = r[r < 0]
-    ds      = neg.std() if len(neg) else 0
-    sortino = mu / ds * np.sqrt(252) if ds > 0 else 0
-    calmar  = ann / abs(mdd) if mdd else 0
-
-    active   = rv[rv["hp"]]["r"].values
-    pos_r, neg_r = active[active > 0], active[active < 0]
-    wr  = len(pos_r) / len(active) if len(active) else 0
-    plr = pos_r.mean() / abs(neg_r.mean()) if len(pos_r) and len(neg_r) else 0
-    total_ret = cum_s[-1] - 1
-
-    # ── 画布 ──
-    fig = plt.figure(figsize=(16, 9))
-    ax  = fig.add_axes([0.07, 0.32, 0.91, 0.60])
-
-    fig.suptitle(f"回测结果{ttl}", fontsize=16, fontweight="bold", y=0.97)
-
-    # ── 折线 ──
-    ax.plot(cum_s, label="策略", linewidth=1.8, color="#2878B5")
-    ax.plot(cum_b, label="价格", linewidth=1.8, color="#F28522")
-    ax.axhline(1, color="#AAAAAA", linestyle="--", linewidth=0.9, alpha=0.8)
-
-    # ── 两条分割线（仅在 mode="all" 时绘制）──
-    if mode == "all":
-        rv_idx = pd.DatetimeIndex(rv.index)
-
-        # Train/Val 分界线
-        if val_split is not None:
-            try:
-                val_day = pd.Timestamp(val_split).normalize()
-                val_pos = int(rv_idx.get_indexer([val_day], method="nearest")[0])
-                if 0 <= val_pos < n_days:
-                    ax.axvline(val_pos, color="#E84F4F", linestyle="--",
-                               linewidth=1.8, alpha=0.85, label="Train/Val 分界")
-            except Exception:
-                pass
-
-        # Val/Test 分界线
-        if test_split is not None:
-            try:
-                test_day = pd.Timestamp(test_split).normalize()
-                test_pos = int(rv_idx.get_indexer([test_day], method="nearest")[0])
-                if 0 <= test_pos < n_days:
-                    ax.axvline(test_pos, color="#9B59B6", linestyle="--",
-                               linewidth=1.8, alpha=0.85, label="Val/Test 分界")
-            except Exception:
-                pass
-
-    # ── 坐标轴 ──
-    ax.set_ylabel("累积收益（日线）", fontsize=12)
-    ax.grid(True, alpha=0.25, linestyle="--")
-    ax.spines[["top", "right"]].set_visible(False)
-
-    ticks  = list(range(0, n_days, max(1, n_days // 10)))
-    dates  = list(rv.index)
-    ax.set_xticks(ticks)
-    ax.set_xticklabels(
-        [pd.Timestamp(dates[i]).strftime("%Y-%m-%d") for i in ticks],
-        rotation=30, ha="right", fontsize=10
-    )
-    ax.tick_params(axis="y", labelsize=10)
-    ax.set_xlim(-n_days * 0.01, n_days * 1.01)
-
-    ax.legend(fontsize=11, loc="upper left", framealpha=0.85,
-              edgecolor="#CCCCCC", fancybox=False)
-
-    # ── 底部表格 ──
-    col_names = ["Sharpe", "年化收益", "Calmar", "Sortino",
-                 "最大回撤", "波动率",  "胜率",   "盈亏比",  "总收益",  "交易次数"]
-    vals      = [
-        f"{sr:.2f}",
-        f"{ann*100:.1f}%",
-        f"{calmar:.2f}",
-        f"{sortino:.2f}",
-        f"{mdd*100:.1f}%",
-        f"{vol*100:.1f}%",
-        f"{wr*100:.1f}%",
-        f"{plr:.2f}",
-        f"{total_ret*100:.1f}%",
-        f"{int(d['hp'].sum())}",
-    ]
-
-    ncols = len(col_names)
-    ax_tbl = fig.add_axes([0.07, 0.04, 0.91, 0.20])
-    ax_tbl.axis("off")
-
-    tbl = ax_tbl.table(
-        cellText=[col_names, vals],
-        cellLoc="center",
-        loc="center",
-        bbox=[0, 0, 1, 1],
-    )
-    tbl.auto_set_font_size(False)
-    tbl.set_fontsize(11)
-
-    for j in range(ncols):
-        cell = tbl[(0, j)]
-        cell.set_facecolor("#DDEEFF")
-        cell.set_text_props(weight="bold", fontsize=11)
-        cell.set_edgecolor("#AAAAAA")
-        cell.set_linewidth(0.8)
-        cell2 = tbl[(1, j)]
-        cell2.set_facecolor("#FFFFFF")
-        cell2.set_edgecolor("#AAAAAA")
-        cell2.set_linewidth(0.8)
-
-    plt.savefig(
-        os.path.join(output_dir, f"backtest_summary{sfx}.png"),
-        dpi=200, bbox_inches="tight", facecolor="white"
-    )
-    plt.close()
-
-
-def _plot_results_3split(results_df, performance, args, output_dir, val_split, test_split):
-    """
-    三段划分绘图入口：绘制全样本图（带两条分割线）+ 样本内/外图
-    """
-    _plot_single_3split(results_df, args, output_dir, val_split, test_split, "all")
-    if val_split:
-        _plot_single_3split(results_df, args, output_dir, val_split, test_split, "in")
-    if test_split:
-        _plot_single_3split(results_df, args, output_dir, val_split, test_split, "out")
 
 
 # ── 集成 PnL 对比图 ─────────────────────────────────────────────────────────
