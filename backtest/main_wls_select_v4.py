@@ -67,7 +67,7 @@ from utils2 import (
 
 # ══════════════════════════════════════════════════════════════════════════════
 MUST_INCLUDE: list[str] = [
-    "x_vwap",
+    "x_vwap_60min",
     "x_ma_ret_4h",
     # "x_ma_afternoon_ret",
     # 'x_马来RBD棕榈油离岸价',
@@ -80,14 +80,14 @@ MUST_INCLUDE: list[str] = [
 ]
 
 N_COMBOS   = 5      # 目标组合数
-POOL_SIZE  = 10     # Stage2/3 候选池大小（缩小以加速）
+POOL_SIZE  = 30     # Stage2/3 候选池大小（缩小以加速）
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 def parse_arguments():
     p = argparse.ArgumentParser()
     # p.add_argument("--data_file",  default=r"G:\pail_oil_cta\data_process\data\output\P_60min_with_ma_features_from_scratch.csv")
-    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_with_ma_features.csv"))
+    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_60min_with_ma_features_from_scratch.csv"))
     # p.add_argument("--data_file",  default=r"G:\pail_oil_cta\data_process\data\output\Palm_oil.csv")
     p.add_argument("--start_date", default="2018-04-17")
     p.add_argument("--train_window",   type=int,   default=4000)
@@ -494,8 +494,6 @@ def stage3_refine_one(
         if best_move is None or best_delta <= 1e-4:
             break
         current, cur_score, oos_s = best_move
-
-
 
     return current, cur_score, oos_s
 

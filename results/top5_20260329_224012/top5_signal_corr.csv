@@ -1,6 +1,0 @@
-﻿,"组合1（x_price_delta_trend_8slot,x_price_ma250_dev_240min_1...）","组合2（x_price_delta_trend_8slot,x_distribute_8slot...）","组合3（x_price_delta_trend_8slot,x_price_ma250_dev_240min...）","组合4（x_price_delta_trend_8slot,x_absorption_8slot...）","组合5（x_price_delta_trend_8slot,x_distribute_8slot_1...）"
-"组合1（x_price_delta_trend_8slot,x_price_ma250_dev_240min_1...）",1.0,0.75421909947355,0.7857527465521612,0.7790520244978587,0.5966154237257348
-"组合2（x_price_delta_trend_8slot,x_distribute_8slot...）",0.75421909947355,1.0,0.6399565448719506,0.8995032040027628,0.6847969251127002
-"组合3（x_price_delta_trend_8slot,x_price_ma250_dev_240min...）",0.7857527465521612,0.6399565448719506,1.0,0.6642500317485762,0.7463288517593053
-"组合4（x_price_delta_trend_8slot,x_absorption_8slot...）",0.7790520244978587,0.8995032040027628,0.6642500317485762,1.0,0.7319364009682692
-"组合5（x_price_delta_trend_8slot,x_distribute_8slot_1...）",0.5966154237257348,0.6847969251127002,0.7463288517593053,0.7319364009682692,1.0

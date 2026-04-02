@@ -142,8 +142,8 @@ def apply_strength_filter(results_df, args):
     res = results_df.copy()
     res["signal"] = signal
     res["position"] = signal.shift(1).fillna(0)
-    trade_open = res["price"]
-    res["price_return"] = trade_open.pct_change(fill_method=None).fillna(0)
+    trade_open = res["open"] if "open" in res.columns else res["price"]
+    res["price_return"] = trade_open.pct_change(fill_method=None).shift(-1).fillna(0)
     res["strategy_return"] = res["position"] * res["price_return"]
 
     if getattr(args, "contract_switch_dates", []):
@@ -316,11 +316,7 @@ def load_palm_oil_data(data_file) -> pd.DataFrame:
             df.set_index("date", inplace=True)
             break
     df.index = pd.to_datetime(df.index)
-    # 清理 Excel 公式残留（如 #NAME?）
-    x_cols = [c for c in df.columns if c.startswith("x_")]
-    for c in x_cols:
-        if df[c].dtype == object:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
+    # print(f"数据加载: {df.shape}  {df.index[0]} ~ {df.index[-1]}")
     return df
 
 
@@ -345,48 +341,48 @@ def prepare_factor_data(
     """
 
     # ── 0. 注入会话特征 ────────────────────────────────────────────────────
-    # if add_session_features:
-    #     df = df.copy()
-    #     idx      = pd.to_datetime(df.index)
-    #     has_time = (idx.hour != 0).any() or (idx.minute != 0).any()
-    #
-    #     if has_time:
-    #         hm = idx.hour * 60 + idx.minute          # 距午夜分钟数
-    #
-    #         # ── 夜盘哑变量 ────────────────────────────────────────────────
-    #         # 21:00(1260) ≤ hm < 23:00(1380)
-    #         is_night = ((hm >= 1260) & (hm < 1380)).astype(float)
-    #
-    #         # ── 盘内归一化进度 [0, 1] ─────────────────────────────────────
-    #         # 白盘：09:00(540)–15:00(900)，午休(690–810)视为连续拉伸
-    #         #        progress = (hm - 540) / 360
-    #         # 夜盘：21:00(1260)–23:00(1380)
-    #         #        progress = (hm - 1260) / 120
-    #         # 其余时段（数据极罕见，如结算时间）默认 0.5
-    #         progress = pd.Series(0.5, index=idx, dtype=float)
-    #
-    #         day_mask   = (hm >= 540)  & (hm < 900)
-    #         night_mask = (hm >= 1260) & (hm < 1380)
-    #
-    #         progress[day_mask]   = (hm[day_mask]   - 540)  / 360.0
-    #         progress[night_mask] = (hm[night_mask]  - 1260) / 120.0
-    #         progress = progress.clip(0.0, 1.0)
-    #
-    #         # sin(π·p)：盘初≈0 → 盘中≈1 → 盘尾≈0，天然捕捉开/收盘对称效应
-    #         session_sin = np.sin(np.pi * progress)
-    #
-    #         df["x_is_night"]    = is_night
-    #         df["x_session_sin"] = session_sin.values if hasattr(session_sin, 'values') else session_sin
-    #
-    #         night_cnt = int(np.sum(is_night > 0))
-    #         day_cnt   = len(is_night) - night_cnt
-    #         print(f"[会话特征] 白盘={day_cnt} bars  夜盘={night_cnt} bars  "
-    #               f"sin均值={session_sin.mean():.3f}")
-    #     else:
-    #         # 日线数据：填 0，不引入噪声
-    #         df["x_is_night"]    = 0.0
-    #         df["x_session_sin"] = 0.0
-    #         print("[会话特征] 日线数据，x_is_night/x_session_sin 均填 0")
+    if add_session_features:
+        df = df.copy()
+        idx      = pd.to_datetime(df.index)
+        has_time = (idx.hour != 0).any() or (idx.minute != 0).any()
+
+        if has_time:
+            hm = idx.hour * 60 + idx.minute          # 距午夜分钟数
+
+            # ── 夜盘哑变量 ────────────────────────────────────────────────
+            # 21:00(1260) ≤ hm < 23:00(1380)
+            is_night = ((hm >= 1260) & (hm < 1380)).astype(float)
+
+            # ── 盘内归一化进度 [0, 1] ─────────────────────────────────────
+            # 白盘：09:00(540)–15:00(900)，午休(690–810)视为连续拉伸
+            #        progress = (hm - 540) / 360
+            # 夜盘：21:00(1260)–23:00(1380)
+            #        progress = (hm - 1260) / 120
+            # 其余时段（数据极罕见，如结算时间）默认 0.5
+            progress = pd.Series(0.5, index=idx, dtype=float)
+
+            day_mask   = (hm >= 540)  & (hm < 900)
+            night_mask = (hm >= 1260) & (hm < 1380)
+
+            progress[day_mask]   = (hm[day_mask]   - 540)  / 360.0
+            progress[night_mask] = (hm[night_mask]  - 1260) / 120.0
+            progress = progress.clip(0.0, 1.0)
+
+            # sin(π·p)：盘初≈0 → 盘中≈1 → 盘尾≈0，天然捕捉开/收盘对称效应
+            session_sin = np.sin(np.pi * progress)
+
+            df["x_is_night"]    = is_night
+            df["x_session_sin"] = session_sin.values if hasattr(session_sin, 'values') else session_sin
+
+            night_cnt = int(np.sum(is_night > 0))
+            day_cnt   = len(is_night) - night_cnt
+            print(f"[会话特征] 白盘={day_cnt} bars  夜盘={night_cnt} bars  "
+                  f"sin均值={session_sin.mean():.3f}")
+        else:
+            # 日线数据：填 0，不引入噪声
+            df["x_is_night"]    = 0.0
+            df["x_session_sin"] = 0.0
+            print("[会话特征] 日线数据，x_is_night/x_session_sin 均填 0")
 
     # ── 1. 以下与原版完全一致 ──────────────────────────────────────────────
     price_cols = [c for c in df.columns if c.lower().startswith("y_")]
@@ -405,20 +401,12 @@ def prepare_factor_data(
     else:
         factor_cols = avail
 
-    # 直接用 y_open shift(-1) 作为价格列：pd_[t] = open[t+1]，与 t 时刻因子对齐
-    # open_col = next((c for c in price_cols if c.lower() == "y_open"), None)
-    # price_col = open_col or price_cols[0]
-    # pd_ = df[price_col].shift(-1)          # t 行存的是 t+1 的 open
-    # fd = df[factor_cols].copy()
+    open_col = next((c for c in price_cols if c.lower() == "y_open"), None)
 
-    # 用close 来预测
-    open_col = next((c for c in price_cols if c.lower() == "y_close"), None)
-    price_col = open_col or price_cols[0]
-    pd_ = df[price_col].shift(0)          # t 行存的是 t+1 的 open
-    fd = df[factor_cols].copy()
+    fd, pd_ = df[factor_cols].copy(), df[price_cols[0]].copy()
+    open_ = df[open_col].copy() if open_col else None
 
-
-    # 滞后特征
+    # 滞后特征（原逻辑不变）
     if factor_lags and len(factor_lags) == len(factor_cols):
         parts, names, max_lag = [], [], max(factor_lags)
         for col, cl in zip(factor_cols, factor_lags):
@@ -428,25 +416,32 @@ def prepare_factor_data(
         fd = pd.concat(parts, axis=1); fd.columns = names
         factor_cols = names
         fd, pd_ = fd.iloc[max_lag - 1:], pd_.iloc[max_lag - 1:]
+        if open_ is not None:
+            open_ = open_.iloc[max_lag - 1:]
     elif lag > 1:
         lagged = [fd]
         for i in range(1, lag):
             s = fd.shift(i); s.columns = [f"{c}_{i}" for c in factor_cols]; lagged.append(s)
         fd = pd.concat(lagged, axis=1); factor_cols = list(fd.columns)
         fd, pd_ = fd.iloc[lag - 1:], pd_.iloc[lag - 1:]
+        if open_ is not None:
+            open_ = open_.iloc[lag - 1:]
 
     if start_date:
         fd, pd_ = fd.loc[start_date:], pd_.loc[start_date:]
+        if open_ is not None:
+            open_ = open_.loc[start_date:]
 
     fd = fd.replace([np.inf, -np.inf], np.nan).ffill().bfill()
-    all_nan_cols = fd.columns[fd.isna().all()].tolist()
-    if all_nan_cols:
-        logging.warning(f"丢弃全NaN因子列({len(all_nan_cols)}): {all_nan_cols}")
-        fd = fd.drop(columns=all_nan_cols)
-        factor_cols = [c for c in factor_cols if c not in set(all_nan_cols)]
     valid = ~(fd.isna().any(axis=1) | fd.isin([np.inf, -np.inf]).any(axis=1) | pd_.isna())
+    if open_ is not None:
+        valid = valid & open_.notna()
 
-    return fd[valid], pd_[valid].copy(), factor_cols
+    fd_valid = fd[valid]
+    pd_valid = pd_[valid].copy()
+    if open_ is not None:
+        pd_valid.attrs["open_price"] = open_[valid].copy()
+    return fd_valid, pd_valid, factor_cols
 
 
 # ── 标签：带反转检测（向量化）────────────────────────────────────────────────
@@ -454,9 +449,8 @@ def prepare_factor_data(
 def _compute_reversal_labels(price_data: pd.Series, fwd: int,
                               check_days: int = 0, multiplier: float = 1.2) -> pd.Series:
     """
-    向量化反转标签：fwd期收益率，若后续出现更强反转则替换。
-    price_data[t] 已经是 open[t+1]（prepare_factor_data 里 shift 过了）。
-    label[t] = (price_data[t+fwd] - price_data[t]) / price_data[t]
+    向量化反转标签：fwd天收益率，若后续出现更强反转则替换。
+    过滤"假突破"，让模型学习持续性方向。
     """
     base = (price_data.shift(-fwd) - price_data) / price_data
     labels = base.copy()
@@ -658,7 +652,7 @@ def _backtest(trade_df: pd.DataFrame, args) -> pd.DataFrame:
 
     n           = len(trade_df)
     predictions = trade_df["prediction"].values
-    trade_open  = trade_df["price"]
+    trade_open  = trade_df["open"] if "open" in trade_df.columns else trade_df["price"]
 
     # # ── 开仓 zscore 过滤（已禁用，改用 strength_filter）──
     # zscore_window    = int(getattr(args, "open_zscore_window", 0))
@@ -742,7 +736,7 @@ def _backtest(trade_df: pd.DataFrame, args) -> pd.DataFrame:
 
     df = trade_df.copy()
     df["position"]     = positions
-    df["price_return"] = trade_open.pct_change(fill_method=None).fillna(0)
+    df["price_return"] = trade_open.pct_change(fill_method=None).shift(-1).fillna(0)
 
     sw = set(pd.to_datetime(getattr(args, "contract_switch_dates", [])))
     df["is_switch"] = df.index.isin(sw)
@@ -757,6 +751,8 @@ def _backtest(trade_df: pd.DataFrame, args) -> pd.DataFrame:
 
     out_cols = ["prediction", "actual_return", "strategy_return",
                 "daily_volume", "position", "cumulative_value", "price", "is_switch"]
+    if "open" in df.columns:
+        out_cols.append("open")
     return df[out_cols]
 
 
@@ -837,8 +833,7 @@ def _performance(results_df: pd.DataFrame, args) -> dict:
 
     active = valid[valid["has_pos"]]["strategy_return"].values
     pos_r, neg_r = active[active > 0], active[active < 0]
-    # wr  = len(pos_r) / len(active) if len(active) else 0
-    wr = len(pos_r) / (len(pos_r) + len(neg_r) )
+    wr  = len(pos_r) / len(active) if len(active) else 0
     plr = pos_r.mean() / abs(neg_r.mean()) if len(pos_r) and len(neg_r) else 0
     # print(f"  [Perf] 胜率={wr:.2%} 盈利{len(pos_r)}日/有仓{len(active)}日")
 
@@ -948,6 +943,9 @@ def _run_sliding_window_backtest(factor_data: pd.DataFrame,
         "price":         price_data.values,
         "actual_return": price_data.pct_change().values,
     }, index=price_data.index)
+    open_price = price_data.attrs.get("open_price")
+    if open_price is not None:
+        trade_df["open"] = open_price.reindex(price_data.index).values
 
     results_df  = _backtest(trade_df, args)
     performance = _performance(results_df, args)
@@ -1025,13 +1023,7 @@ def print_performance_table(results_df: pd.DataFrame, args):
 
 def save_results(args, factor_cols, output_dir, performance, results_df):
     os.makedirs(output_dir, exist_ok=True)
-    df_save = results_df.copy()
-    idx = pd.to_datetime(df_save.index)
-    df_save.insert(0, "datetime", idx)
-    df_save.insert(1, "date", idx.date)
-    df_save.insert(2, "time", idx.strftime("%H:%M"))
-    df_save.index.name = None
-    df_save.to_csv(os.path.join(output_dir, "results_df.csv"), index=False)
+    results_df.to_csv(os.path.join(output_dir, "results_df.csv"))
 
     with open(os.path.join(output_dir, "performance_summary.txt"), "w", encoding="utf-8") as f:
         f.write("棕榈油因子回测性能摘要\n" + "="*50 + "\n")
@@ -1204,187 +1196,6 @@ def _plot_results(results_df, performance, args, output_dir):
     if performance.get("split_point"):
         _plot_single(results_df, args, output_dir, "in")
         _plot_single(results_df, args, output_dir, "out")
-
-
-# ── 三段划分绘图（Train / Val / Test）─────────────────────────────────────────
-
-def _plot_single_3split(results_df, args, output_dir, val_split, test_split, mode="all"):
-    """
-    绘制带有两条分割线的回测图：
-      - 第一条虚线：Train/Val 分界（val_split）
-      - 第二条虚线：Val/Test 分界（test_split）
-
-    参数
-    ----
-    val_split  : str or pd.Timestamp, Train/Val 分界点
-    test_split : str or pd.Timestamp, Val/Test 分界点
-    mode       : "all" | "in" | "out"
-    """
-    fwd = getattr(args, "fwd", 1)
-
-    if mode == "in" and val_split:
-        df, sfx, ttl = results_df[results_df.index < val_split], "_in_sample", "（样本内 Train）"
-    elif mode == "out" and test_split and test_split in results_df.index:
-        si = results_df.index.get_loc(test_split)
-        if isinstance(si, slice):
-            si = si.stop - 1 if si.stop is not None else len(results_df) - 1
-        elif isinstance(si, np.ndarray):
-            si = int(np.flatnonzero(si)[-1])
-        df, sfx, ttl = results_df.iloc[si + fwd + 2:], "_out_of_sample", "（样本外 Test）"
-    else:
-        df, sfx, ttl = results_df, "", ""
-
-    if len(df) == 0:
-        return
-
-    # ── 日线聚合 ──
-    _key = pd.to_datetime(df.index).normalize()
-    d    = df.groupby(_key).agg(
-        r=("strategy_return", "sum"),
-        br=("actual_return",  "sum"),
-        sw=("is_switch",      "any"),
-        hp=("position",       lambda x: (x != 0).any()),
-    )
-    rv    = d[~d["sw"]]
-    r     = rv["r"].values
-    br    = rv["br"].values
-    n_days = len(r)
-    if n_days == 0:
-        return
-
-    cum_s = np.cumprod(1 + r)
-    cum_b = np.cumprod(1 + br)
-
-    # ── 指标（日线）──
-    mu, sigma = r.mean(), r.std()
-    ann  = mu * 252
-    vol  = sigma * np.sqrt(252)
-    sr   = mu / sigma * np.sqrt(252) if sigma > 0 else 0
-    cum_arr = 1.0 + np.cumsum(r)
-    peak    = np.maximum.accumulate(cum_arr)
-    mdd     = ((cum_arr - peak) / peak).min()
-    neg     = r[r < 0]
-    ds      = neg.std() if len(neg) else 0
-    sortino = mu / ds * np.sqrt(252) if ds > 0 else 0
-    calmar  = ann / abs(mdd) if mdd else 0
-
-    active   = rv[rv["hp"]]["r"].values
-    pos_r, neg_r = active[active > 0], active[active < 0]
-    wr  = len(pos_r) / len(active) if len(active) else 0
-    plr = pos_r.mean() / abs(neg_r.mean()) if len(pos_r) and len(neg_r) else 0
-    total_ret = cum_s[-1] - 1
-
-    # ── 画布 ──
-    fig = plt.figure(figsize=(16, 9))
-    ax  = fig.add_axes([0.07, 0.32, 0.91, 0.60])
-
-    fig.suptitle(f"回测结果{ttl}", fontsize=16, fontweight="bold", y=0.97)
-
-    # ── 折线 ──
-    ax.plot(cum_s, label="策略", linewidth=1.8, color="#2878B5")
-    ax.plot(cum_b, label="价格", linewidth=1.8, color="#F28522")
-    ax.axhline(1, color="#AAAAAA", linestyle="--", linewidth=0.9, alpha=0.8)
-
-    # ── 两条分割线（仅在 mode="all" 时绘制）──
-    if mode == "all":
-        rv_idx = pd.DatetimeIndex(rv.index)
-
-        # Train/Val 分界线
-        if val_split is not None:
-            try:
-                val_day = pd.Timestamp(val_split).normalize()
-                val_pos = int(rv_idx.get_indexer([val_day], method="nearest")[0])
-                if 0 <= val_pos < n_days:
-                    ax.axvline(val_pos, color="#E84F4F", linestyle="--",
-                               linewidth=1.8, alpha=0.85, label="Train/Val 分界")
-            except Exception:
-                pass
-
-        # Val/Test 分界线
-        if test_split is not None:
-            try:
-                test_day = pd.Timestamp(test_split).normalize()
-                test_pos = int(rv_idx.get_indexer([test_day], method="nearest")[0])
-                if 0 <= test_pos < n_days:
-                    ax.axvline(test_pos, color="#9B59B6", linestyle="--",
-                               linewidth=1.8, alpha=0.85, label="Val/Test 分界")
-            except Exception:
-                pass
-
-    # ── 坐标轴 ──
-    ax.set_ylabel("累积收益（日线）", fontsize=12)
-    ax.grid(True, alpha=0.25, linestyle="--")
-    ax.spines[["top", "right"]].set_visible(False)
-
-    ticks  = list(range(0, n_days, max(1, n_days // 10)))
-    dates  = list(rv.index)
-    ax.set_xticks(ticks)
-    ax.set_xticklabels(
-        [pd.Timestamp(dates[i]).strftime("%Y-%m-%d") for i in ticks],
-        rotation=30, ha="right", fontsize=10
-    )
-    ax.tick_params(axis="y", labelsize=10)
-    ax.set_xlim(-n_days * 0.01, n_days * 1.01)
-
-    ax.legend(fontsize=11, loc="upper left", framealpha=0.85,
-              edgecolor="#CCCCCC", fancybox=False)
-
-    # ── 底部表格 ──
-    col_names = ["Sharpe", "年化收益", "Calmar", "Sortino",
-                 "最大回撤", "波动率",  "胜率",   "盈亏比",  "总收益",  "交易次数"]
-    vals      = [
-        f"{sr:.2f}",
-        f"{ann*100:.1f}%",
-        f"{calmar:.2f}",
-        f"{sortino:.2f}",
-        f"{mdd*100:.1f}%",
-        f"{vol*100:.1f}%",
-        f"{wr*100:.1f}%",
-        f"{plr:.2f}",
-        f"{total_ret*100:.1f}%",
-        f"{int(d['hp'].sum())}",
-    ]
-
-    ncols = len(col_names)
-    ax_tbl = fig.add_axes([0.07, 0.04, 0.91, 0.20])
-    ax_tbl.axis("off")
-
-    tbl = ax_tbl.table(
-        cellText=[col_names, vals],
-        cellLoc="center",
-        loc="center",
-        bbox=[0, 0, 1, 1],
-    )
-    tbl.auto_set_font_size(False)
-    tbl.set_fontsize(11)
-
-    for j in range(ncols):
-        cell = tbl[(0, j)]
-        cell.set_facecolor("#DDEEFF")
-        cell.set_text_props(weight="bold", fontsize=11)
-        cell.set_edgecolor("#AAAAAA")
-        cell.set_linewidth(0.8)
-        cell2 = tbl[(1, j)]
-        cell2.set_facecolor("#FFFFFF")
-        cell2.set_edgecolor("#AAAAAA")
-        cell2.set_linewidth(0.8)
-
-    plt.savefig(
-        os.path.join(output_dir, f"backtest_summary{sfx}.png"),
-        dpi=200, bbox_inches="tight", facecolor="white"
-    )
-    plt.close()
-
-
-def _plot_results_3split(results_df, performance, args, output_dir, val_split, test_split):
-    """
-    三段划分绘图入口：绘制全样本图（带两条分割线）+ 样本内/外图
-    """
-    _plot_single_3split(results_df, args, output_dir, val_split, test_split, "all")
-    if val_split:
-        _plot_single_3split(results_df, args, output_dir, val_split, test_split, "in")
-    if test_split:
-        _plot_single_3split(results_df, args, output_dir, val_split, test_split, "out")
 
 
 # ── 集成 PnL 对比图 ─────────────────────────────────────────────────────────

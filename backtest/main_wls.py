@@ -25,57 +25,15 @@ from utils2 import (
 # ── 因子列表 ──────────────────────────────────────────────────────────────────
 
 FACTORS = [
-    # "x_chaikin_osc_60min",
-    # "x_vwap_60min",
-    # # "x_vpin_zscore_filtered_60min",
-    # "x_volume_profile_60min",
-    # "x_ease_of_movement_60min",
-    # "x_ma_ret_6h",
-    # "x_ma_afternoon_ret",
-    # "x_price_accel_240min",
-    # "x_vol_ma_ratio_240min",
-
-    # "x_vwap_8slot",
-    # "x_ma_ret_4h",
-    # "x_trend_8slot",
-    # "x_absorption_8slot",
-    # "x_liquidity_240min",
-    # "x_price_delta_volume_8slot",
-    # "x_vol_change_rate_240min",
-    # "x_price_jump_240min",
-    # "x_ma_midday_ret",
-    # "x_spread_2h",
-    # "x_price_jump_8slot",
-    # "x_price_reversal_8slot",
-    # "x_sar_diff_240min"
-
-# 'x_vwap_6slot', 'x_ma_ret_4h', 'x_price_delta_trend_6slot', 'x_distribute_6slot', 'x_trend_6slot',
-#     'x_absorption_6slot', 'x_cvd_6slot', 'x_price_channel_breakout_6slot', 'x_hurst_240min', 'x_volume_profile_240min', 'x_vol_change_rate_240min', 'x_ma_midday_ret', 'x_ma_bar_ret', 'x_price_jump_6slot', 'x_session_sin'
-
-
-# 'x_vwap_60min', 'x_ma_ret_4h', 'x_price_delta_trend_60min', 'x_distribute_60min', 'x_trend_60min',
-#     'x_absorption_60min', 'x_cvd_60min', 'x_price_channel_breakout_60min', 'x_hurst_240min', 'x_volume_profile_240min', 'x_vol_change_rate_240min', 'x_ma_midday_ret', 'x_ma_bar_ret', 'x_price_jump_60min', 'x_session_sin'
-#
-
-                                                                                                                                                                                                             "x_vwap",
-    # "x_vwap",
-    # "x_ma_ret_4h",
-    # # "x_session_sin",
-    # "x_spread_12h",
-    # "x_price_delta_trend",
-    # "x_absorption",
-    # "x_ma_ret_20h",
-    # # "x_ma_ret_6h",
-    # "x_price_volume_trend",
-    # "x_cvd",
-    # "x_is_night"
-
-    "x_vwap",
-    "x_ma_ret_4h",
-    "x_ma_ret_20h",
-    "x_price_volume_trend",
-    "x_volume_profile_indicator",
-    "x_is_night"
+    "x_chaikin_osc_60min",
+    "x_vwap_60min",
+    # "x_vpin_zscore_filtered_60min",
+    "x_volume_profile_60min",
+    "x_ease_of_movement_60min",
+    "x_ma_ret_6h",
+    "x_ma_afternoon_ret",
+    "x_price_accel_240min",
+    "x_vol_ma_ratio_240min",
 ]
 
 
@@ -86,14 +44,14 @@ def parse_arguments():
 
     # 数据
     # p.add_argument("--data_file",  default=r"G:\bond\data\P_60min_with_ma_features_from_scratch.csv")
-    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_with_ma_features.csv"))
+    p.add_argument("--data_file",  default=os.path.join(project_root,"data\\P_60min_with_ma_features_from_scratch.csv"))
     p.add_argument("--start_date", default="2018-04-17")
 
     # 训练
-    p.add_argument("--train_window",  type=int, default=3000)
+    p.add_argument("--train_window",  type=int, default=4000)
     p.add_argument("--mode",          default="rolling", choices=["rolling", "expanding"])
-    p.add_argument("--retrain_freq",  type=int, default=500)
-    p.add_argument("--fwd",           type=int, default=3)
+    p.add_argument("--retrain_freq",  type=int, default=1000)
+    p.add_argument("--fwd",           type=int, default=7)
     p.add_argument("--lag",           type=int, default=2)
     p.add_argument("--factor_lags",   default="")
     p.add_argument("--use_scaler",    action="store_true", default=True)
@@ -125,7 +83,7 @@ def parse_arguments():
     # 信号强度过滤
     p.add_argument("--use_strength_filter", action="store_true",  default=True)
     p.add_argument("--no_strength_filter",  action="store_false", dest="use_strength_filter")
-    p.add_argument("--entry_strength_pct",  type=float, default=0.8)
+    p.add_argument("--entry_strength_pct",  type=float, default=0.7)
 
     return p.parse_args()
 

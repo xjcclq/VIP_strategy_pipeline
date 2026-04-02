@@ -1,6 +1,0 @@
-﻿,"组合1（x_price_impact_1,x_hurst_exponent...）","组合2（x_liquidity_indicator_1,x_price_impact_1...）","组合3（x_liquidity_indicator_1,x_price_impact_1...）","组合4（x_price_impact_1,x_ma_ret_6h...）","组合5（x_liquidity_indicator_1,x_price_impact_1...）"
-"组合1（x_price_impact_1,x_hurst_exponent...）",1.0,0.8818420172794095,0.726049251737884,0.6540513467871748,0.8855027945230565
-"组合2（x_liquidity_indicator_1,x_price_impact_1...）",0.8818420172794095,1.0,0.7836089712920208,0.655438293501032,0.9805198396776099
-"组合3（x_liquidity_indicator_1,x_price_impact_1...）",0.726049251737884,0.7836089712920208,1.0,0.6706712580088783,0.7763200818611324
-"组合4（x_price_impact_1,x_ma_ret_6h...）",0.6540513467871748,0.655438293501032,0.6706712580088783,1.0,0.6439647723200111
-"组合5（x_liquidity_indicator_1,x_price_impact_1...）",0.8855027945230565,0.9805198396776099,0.7763200818611324,0.6439647723200111,1.0

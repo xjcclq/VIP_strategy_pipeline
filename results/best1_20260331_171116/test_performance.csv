@@ -1,2 +1,0 @@
-﻿val_sharpe,test_sharpe,cv_score,mac,n_factors,factors
-3.0747235625490728,0.8230225000666239,1.6284084035733415,0.030923409224502974,8,x_ma_ret_4h|x_is_night|x_session_sin|x_amihud_volatility|x_price_impact|x_kyle_lambda_lag|x_price_ma250_dev|x_open_interest

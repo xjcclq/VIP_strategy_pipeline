@@ -35,47 +35,21 @@ from Utils_xgb import run_backtest_xgb
 # ══════════════════════════════════════════════════════════════════════════════
 
 FACTORS = [
-    # "x_vwap_60min",
-    # "x_ma_ret_4h",
-    # "x_obv_60min",
-    # "x_intraday_return_240min",
-    # "x_chaikin_osc_60min",
-    # "x_ad_line_240min",
-    # "x_overnight_return_60min",
-    # "x_absorption_60min",
-    # "x_price_jump_60min",
-    # "x_cvd_60min",
-    # "x_session_sin",
-    # "x_price_delta_volume_60min",
-    # # "x_vpin_zscore_filtered_60min",
-    # "x_rel_vol_240min",
-    # "x_volume_profile_60min",
-
+    "x_vwap_60min",
     "x_ma_ret_4h",
-    "x_open_interest",
-    "x_ma_ret_20h",
-    "x_high_low_ratio",
-    "x_liquidity_indicator",
-    "x_volume_ma_ratio",
-    "x_ma_afternoon_ret",
-    "x_ma_ret_6h",
-    "x_is_night"
-
-    # "x_vwap_8slot",
-    # "x_ma_ret_8h",
-    # "x_linearreg_ma_240min",
-    # "x_price_channel_breakout_240min",
-    # "x_sar_diff_240min",
-    # "x_rel_vol_240min",
-    # "x_vol_ma_ratio_240min",
-    # "x_open_interest_x",
-    # "x_pvt_8slot",
-    # "x_high_low_ratio_240min",
-    # "x_cvd_8slot",
-    # "x_gap_ratio_8slot",
-    # "x_trend_8slot",
-    # "x_distribute_8slot",
-    # "x_roc_8slot"
+    "x_obv_60min",
+    "x_intraday_return_240min",
+    "x_chaikin_osc_60min",
+    "x_ad_line_240min",
+    "x_overnight_return_60min",
+    "x_absorption_60min",
+    "x_price_jump_60min",
+    "x_cvd_60min",
+    "x_session_sin",
+    "x_price_delta_volume_60min",
+    # "x_vpin_zscore_filtered_60min",
+    "x_rel_vol_240min",
+    "x_volume_profile_60min",
 ]
 
 
@@ -89,31 +63,31 @@ def parse_arguments():
     p.add_argument("--json", type=str, default="",
                    help="从 backtest_params.json 加载参数（覆盖默认值）")
 
-    p.add_argument("--data_file",  default=os.path.join(project_root, "data\\P_with_ma_features.csv"))
-    p.add_argument("--start_date", default="2020-04-17")
+    p.add_argument("--data_file",  default=os.path.join(project_root, "data", "P_60min_with_ma_features_from_scratch.csv"))
+    p.add_argument("--start_date", default="2018-04-17")
 
     # 训练
     p.add_argument("--train_window",  type=int,   default=4000)
     p.add_argument("--mode",          default="rolling", choices=["rolling", "expanding"])
-    p.add_argument("--retrain_freq",  type=int,   default=100)
+    p.add_argument("--retrain_freq",  type=int,   default=1000)
     p.add_argument("--fwd",           type=int,   default=3)
-    p.add_argument("--lag",           type=int,   default=2)
+    p.add_argument("--lag",           type=int,   default=1)
     p.add_argument("--factor_lags",   default="")
     p.add_argument("--use_scaler",    action="store_true",  default=True)
     p.add_argument("--no_scaler",     action="store_false", dest="use_scaler")
-    p.add_argument("--check_days",    type=int,   default=0)
+    p.add_argument("--check_days",    type=int,   default=3)
     p.add_argument("--multiplier",    type=float, default=2.0)
     p.add_argument("--add_session_features", action="store_true",  default=True)
     p.add_argument("--no_session_features",  action="store_false", dest="add_session_features")
 
     # XGBoost
     p.add_argument("--top_n_features",   type=int,   default=0)
-    p.add_argument("--n_estimators",     type=int,   default=60)
+    p.add_argument("--n_estimators",     type=int,   default=300)
     p.add_argument("--max_depth",        type=int,   default=3)
     p.add_argument("--learning_rate",    type=float, default=0.03)
     p.add_argument("--subsample",        type=float, default=0.7)
     p.add_argument("--colsample_bytree", type=float, default=0.5)
-    p.add_argument("--min_child_weight", type=int,   default=50)
+    p.add_argument("--min_child_weight", type=int,   default=20)
     p.add_argument("--reg_alpha",        type=float, default=1.0)
     p.add_argument("--reg_lambda",       type=float, default=8.0)
 

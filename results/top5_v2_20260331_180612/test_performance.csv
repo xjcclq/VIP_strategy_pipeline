@@ -1,6 +1,0 @@
-﻿rank,val_sharpe,test_sharpe,cv_score,mac,n_factors,optional
-1,1.9190476522706617,1.5503653334418315,1.6889840985638918,0.050516782357010986,10,x_open_interest|x_money_flow_index|x_high_low_ratio_1|x_liquidity_indicator|x_is_night|x_session_sin|x_spread_12h|x_ma_afternoon_ret
-2,2.0940064690614535,1.8233129474314336,1.5671879023410875,0.08253425270235397,8,x_open_interest_1|x_volume_profile_indicator_1|x_volume_ma_ratio_1|x_spread_20h|x_ma_afternoon_ret|x_ma_ret_8h
-3,1.7781712460016719,1.0720443344286563,1.5830671905872569,0.11477310457047292,10,x_open_interest_1|x_money_flow_index|x_ma_ret_20h|x_volume_ma_ratio_1|x_spread_20h|x_ma_afternoon_ret_1|x_ma_ret_6h|x_liquidity_indicator
-4,1.9068571649828232,1.4615107128960838,1.5735976607945374,0.08893861045140095,10,x_open_interest_1|x_ma_ret_20h|x_high_low_ratio_1|x_liquidity_indicator_1|x_volume_ma_ratio_1|x_ma_afternoon_ret|x_ma_ret_6h|x_is_night
-5,1.971278166351253,1.4771947341361693,1.5508857220862666,0.13322722578247712,8,x_open_interest_1|x_money_flow_index|x_ma_ret_20h|x_volume_ma_ratio_1|x_ma_ret_6h|x_liquidity_indicator

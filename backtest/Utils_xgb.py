@@ -43,27 +43,13 @@ from utils2 import (
 # 超参默认值（可通过 args 覆盖）
 # ══════════════════════════════════════════════════════════════════════════════
 
-# XGB_DEFAULTS = dict(
-#     n_estimators     = 60,
-#     max_depth        = 3,
-#     learning_rate    = 0.03,
-#     subsample        = 0.7,
-#     colsample_bytree = 0.5,
-#     min_child_weight = 50,
-#     reg_alpha        = 1.0,
-#     reg_lambda       = 8.0,
-#     random_state     = 42,
-#     n_jobs           = -1,
-#     tree_method      = "hist",   # 快速直方图算法
-# )
-
 XGB_DEFAULTS = dict(
-    n_estimators     = 300,
+    n_estimators     = 60,
     max_depth        = 3,
     learning_rate    = 0.03,
     subsample        = 0.7,
     colsample_bytree = 0.5,
-    min_child_weight = 20,
+    min_child_weight = 50,
     reg_alpha        = 1.0,
     reg_lambda       = 8.0,
     random_state     = 42,
